@@ -2,7 +2,8 @@
 
 import pygame
 
-from .constants import HEIGHT, OFFSET, black, green, grid_x, grid_y, orange, pink, red, weighted, white
+from .constants import HEIGHT, OFFSET, grid_x, grid_y, black, green, orange, \
+    pink, red, weighted, white
 
 
 class Grid:
@@ -12,10 +13,19 @@ class Grid:
     def __init__(self, win):
         self.grid = {(x, y): Node(win, white, x, y, 25, 25)
                      for y in range(grid_y) for x in range(grid_x)}
-        self.has_start = self.has_end = self.has_bomb = False
-        self.start = self.end = self.bomb = (None, None)
-        self.weight = 10
+
+        self.has_start = self.has_end = True
+        self.has_bomb = False
+
+        # set start and end to the first and third quartiles
+        self.start = (int(grid_x * .25), grid_y // 2)
+        self.end = (int(grid_x * .75), grid_y // 2)
+        self.grid[self.start].make_start()
+        self.grid[self.end].make_end()
+
+        self.bomb = (None, None)
         self.visualized = False
+        self.weight = 10
 
     def draw_grid(self, win):
         """draws all nodes"""
@@ -60,6 +70,12 @@ class Grid:
             self.grid[node].make_weight()
             self.draw_node(win, node)
 
+    def clear_walls(self, win):
+        """resets all wall nodes"""
+        for node in self.walls:
+            self.grid[node].clear()
+            self.draw_node(win, node)
+
     def clear_node(self, win, node, draw=False):
         """resets the state of the node based on its current color"""
         if self.grid[node].color == green:
@@ -78,7 +94,10 @@ class Grid:
             self.draw_node(win, node)
 
     def clear(self, win):
-        """resets all nodes in grid by calling clear_node on every object in grid"""
+        """
+        Resets all nodes in grid by calling clear_node
+        on every object in grid.
+        """
         for node in self.grid:
             if self.grid[node].color != white:
                 self.clear_node(win, node, True)
@@ -87,39 +106,29 @@ class Grid:
             self.set_end(win, (int(grid_x * .75), grid_y // 2))
 
     def draw_node(self, win, node):
-        """
-        Draws the node then caches its rect object to draw later
-        """
+        """draws the node then caches its rect object to draw later"""
         self.grid[node].draw(win)
         Grid.cache.append(self.grid[node].rect_obj)
 
     def draw(self, win, node):
-        """
-        Draws the node
-        :param win:
-        :param node int tuple
-        """
+        """draws the node"""
         self.grid[node].draw(win)
 
     @property
     def walls(self):
-        """
-        :return: list of all walls as a int tuple
-        """
-        return [(self.grid[pos].get_pos()) for pos in self.grid if self.grid[pos].color == black]
+        """:returns list of all walls as a int tuple"""
+        return [(self.grid[pos].get_pos())
+                for pos in self.grid if self.grid[pos].color == black]
 
     @property
     def weights(self):
-        """
-        :return: list of all walls as a int tuple
-        """
-        return {(self.grid[pos].get_pos()): 10 if self.grid[pos].color == orange else 1 for pos in self.grid}
+        """:returns list of all walls as a int tuple"""
+        return {(self.grid[pos].get_pos()): 10
+        if self.grid[pos].color == orange else 1 for pos in self.grid}
 
     @property
     def draggable(self):
-        """
-        Draggable
-        """
+        """:returns dict of draggable nodes"""
         return {
             self.start: self.grid[self.start],
             self.end: self.grid[self.end],
@@ -128,7 +137,7 @@ class Grid:
 
     def clear_searched(self, win, color):
         """
-        resets stuff
+        resets all nodes that are in color
         :param win: pygame surface
         :param color: tuple of colors
         """
@@ -142,10 +151,12 @@ class Grid:
 
 class Node:
     """
-    Sets states like node is weighted or node is start
+    The class to set states,
+    draws and get states for each node in the grid.
     """
 
-    def __init__(self, win, color, x, y, width, height, x_coord=None, y_coord=None):
+    def __init__(self, win, color, x, y, width, height,
+                 x_coord=None, y_coord=None):
         self.color = color
         self.x = HEIGHT // grid_y * x + OFFSET if x_coord is None else x_coord
         self.y = HEIGHT // grid_y * y + OFFSET if y_coord is None else y_coord
@@ -153,34 +164,37 @@ class Node:
         self.y_coord = y
         self.width = width + 1
         self.height = height + 1
-        self.rect_obj = pygame.draw.rect(win, self.color,
-                                         (self.x, self.y, self.width, self.height))
+        self.rect_obj = pygame.draw.rect(
+            win, self.color, (self.x, self.y, self.width, self.height)
+        )
         self.dragging = False
-        # self.is_wall = False  # is black
-        # self.is_start = False # is green
-        # self.is_end = False   # is red or dark red
-        # self.is_bomb = False  # is pink or dark pink
-        # self.is_path = False  # is yellow
-        # self.is_weight = False # is orange
-        # self.is_null = False  # is white
 
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.color}, {self.x_coord}, {self.y_coord}, {self.width}, {self.height}, {self.x}, {self.y})'
+        return f'{self.__class__.__name__}({self.color}, {self.x_coord}, ' \
+               f'{self.y_coord}, {self.width}, {self.height}, {self.x}, {self.y})'
 
     def __str__(self):
-        return f'Class Name:{self.__class__.__name__} Color: {self.color}, X Position: {self.x_coord}, Y Position: {self.y_coord}, Width: {self.width}, Height: {self.height}, X: {self.x}, Y: {self.y})'
+        return f'Class Name:{self.__class__.__name__} Color: {self.color}, ' \
+               f'X Position: {self.x_coord}, Y Position: {self.y_coord}, ' \
+               f'Width: {self.width}, Height: {self.height}, X: {self.x}, Y: {self.y})'
 
     def draw(self, win, redraw=False):
-        """draws the rect and updates the rectangle object to update one obj at a time instead of the whole screen"""
+        """
+        Draws the rect and updates the rectangle object to
+        update one obj at a time instead of the whole screen.
+        """
 
-        self.rect_obj = pygame.draw.rect(win, self.color,
-                                         (self.x, self.y, self.width, self.height))
+        self.rect_obj = pygame.draw.rect(
+            win, self.color, (self.x, self.y, self.width, self.height)
+        )
         if redraw:
             Grid.cache.append(self.rect_obj)
 
     # def update_obj(self, win):
-    #     self.rect_obj = pygame.draw.rect(win, self.color,
-    #                                      (self.x, self.y, self.width, self.height))
+    #     self.rect_obj = pygame.draw.rect(
+    #         win, self.color, (self.x, self.y, self.width, self.height)
+    #     )
+
     #
     # def resize(self, win, size):
     #     temp = self.rect_obj.center
@@ -198,9 +212,13 @@ class Node:
     #     self.y -= temp[1]
 
     def hover(self, mouse) -> bool:
-        """:returns True if mouse is inside the rectangle otherwise False"""
-        return True if self.x - OFFSET < mouse[0] < self.x + self.width + OFFSET and \
-                       self.y - OFFSET < mouse[1] < self.y + self.height + OFFSET else False
+        """:return True if mouse is inside the rectangle else False"""
+        x_pos, y_pos = mouse
+        if self.x - OFFSET < x_pos < self.x + self.width + OFFSET and \
+                self.y - OFFSET < y_pos < self.y + self.height + OFFSET:
+            return True
+        else:
+            return False
 
     def make_wall(self):
         """sets a node to the wall color"""
