@@ -1,5 +1,5 @@
 # Pathfinding Visualizer 
-Welcome to the Pathfinding Visualizer! I was allways facinated by optimization problems 
+Welcome to the Pathfinding Visualizer! I was always fascinated by optimization problems 
 and pathfinding algorithms are all about finding the optimal solution as quickly and efficently as possible.
 This pathfinder was made with pygame and uses various search algorithms to find the end node in a undirected graph.
 
