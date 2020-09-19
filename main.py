@@ -17,19 +17,17 @@ pygame.display.set_icon(WIN)
 
 
 def main():
-    """
-    Runs the pathfinder module
-    """
+    """runs the pathfinder module"""
 
     # - Update display -
     def redraw_window(win):
-        """Updates the entire screen"""
+        """updates the entire screen"""
         WIN.fill((175, 216, 248))
         graph.draw_grid(win)
         pygame.display.update()
 
     def update_nodes():
-        """Updates only objects that have changed states"""
+        """updates only objects that have changed states"""
         pygame.display.update(Grid.cache)
         Grid.cache.clear()
 
