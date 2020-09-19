@@ -2,8 +2,7 @@
 
 import pygame
 
-from .constants import HEIGHT, OFFSET, grid_x, grid_y, black, green, orange, \
-    pink, red, weighted, white
+from .constants import HEIGHT, OFFSET, black, green, grid_x, grid_y, orange, pink, red, weighted, white
 
 
 class Grid:
