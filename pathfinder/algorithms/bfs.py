@@ -1,8 +1,7 @@
 """The Breadth-First Search Algorithm"""
-from pathfinder.search.adjacent_nodes import adjacent_nodes
+from .adjacent_nodes import adjacent_nodes
 
 
-# @logger
 def bfs(start, end, wall, grid_size):
     """
     Define a nodes location as a tuple e.g. (3,4) and (2,4),
