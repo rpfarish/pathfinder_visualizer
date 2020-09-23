@@ -1,19 +1,24 @@
 """Controls entire project"""
+import os
+
 import pygame
 
-from pathfinder.constants import HEIGHT, WIDTH, blue, dark_pink, grid_offset, \
-    grid_x, grid_y
+import pathfinder as pf
 from pathfinder.maze import Maze
 from pathfinder.node import Grid
-from pathfinder.search.algorithm import Algorithm
+from pathfinder.search import Algorithm
 from pathfinder.utils import get_node_pos
 
 version = '2.8.1'
 
 # - Pygame init -
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIN = pygame.display.set_mode((pf.WIDTH, pf.HEIGHT))
 pygame.display.set_caption(f"Pathfinder v{version}")
 pygame.display.set_icon(WIN)
+
+# - load assets -
+
+TARGET = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'bla.png')), (25//2, 25//2))
 
 
 def main():
@@ -24,6 +29,7 @@ def main():
         """updates the entire screen"""
         WIN.fill((175, 216, 248))
         graph.draw_grid(win)
+
         pygame.display.update()
 
     def update_nodes():
@@ -35,7 +41,9 @@ def main():
     clock = pygame.time.Clock()
     graph = Grid(WIN)
     graph.draw_grid(WIN)
-    alg_name = 'dijkstra'  # default alg
+    maze = Maze(pf.grid_x, pf.grid_y)
+    alg_name = 'astar'  # default alg
+    # fill and update the display
     WIN.fill((175, 216, 248))
     redraw_window(WIN)
 
@@ -110,9 +118,15 @@ def main():
 
         # - Mazes -
 
+        # # Basic weight maze
+        # elif keys[pygame.K_LSHIFT] and keys[pygame.K_m]:
+        #     if alg_name in pf.weighted:
+        #         maze.basic_weight_maze(WIN, graph)
+        #         redraw_window(WIN)
+
         # Basic random maze
         elif keys[pygame.K_m]:
-            Maze(graph, grid_x, grid_y).basic_random_maze(WIN)
+            maze.basic_random_maze(WIN, graph)
             redraw_window(WIN)
 
         # - Exit -
@@ -128,19 +142,21 @@ def main():
                 node_list = [graph.start, graph.bomb, graph.end]
 
                 alg = Algorithm(alg_name, node_list, graph.walls,
-                                grid_offset, graph.weights)
+                                pf.grid_offset, graph.weights)
 
-                alg.run_alg(WIN, graph, [dark_pink, blue])
+                alg.run_alg(WIN, graph, [pf.dark_pink, pf.blue])
 
             elif not graph.has_bomb:
                 node_list = [graph.start, graph.end]
 
                 alg = Algorithm(alg_name, node_list, graph.walls,
-                                grid_offset, graph.weights)
+                                pf.grid_offset, graph.weights)
 
-                alg.run_alg(WIN, graph, [blue])
+                alg.run_alg(WIN, graph, [pf.blue])
 
             print('Visualization done')
+
+
 
 
 if __name__ == '__main__':
