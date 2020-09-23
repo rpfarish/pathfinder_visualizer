@@ -1,8 +1,13 @@
 """Creates and controls the getting setting of Node objects"""
+import os
 
 import pygame
 
 from .constants import HEIGHT, OFFSET, black, green, grid_x, grid_y, orange, pink, red, weighted, white
+
+node_size = (25, 25)
+
+TARGET = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), node_size)
 
 
 class Grid:
@@ -10,7 +15,7 @@ class Grid:
     cache = []
 
     def __init__(self, win):
-        self.grid = {(x, y): Node(win, white, x, y, 25, 25)
+        self.grid = {(x, y): Node(win, white, x, y, node_size[0], node_size[1])
                      for y in range(grid_y) for x in range(grid_x)}
 
         self.has_start = self.has_end = True
@@ -74,6 +79,12 @@ class Grid:
         for node in self.walls:
             self.grid[node].clear()
             self.draw_node(win, node)
+
+    # def clear_weights(self, win):
+    #     """resets all weights nodes"""
+    #     for node in self.weights:
+    #         self.grid[node].clear()
+    #         self.draw_node(win, node)
 
     def clear_node(self, win, node, draw=False):
         """resets the state of the node based on its current color"""
@@ -167,6 +178,7 @@ class Node:
             win, self.color, (self.x, self.y, self.width, self.height)
         )
         self.dragging = False
+        self.is_target = False
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.color}, {self.x_coord}, ' \
@@ -188,6 +200,9 @@ class Node:
         )
         if redraw:
             Grid.cache.append(self.rect_obj)
+
+        if self.is_target:
+            win.blit(TARGET, (self.x, self.y))
 
     # def update_obj(self, win):
     #     self.rect_obj = pygame.draw.rect(
