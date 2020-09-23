@@ -1,4 +1,5 @@
 """This module does blah blah."""
+import time
 
 from .constants import OFFSET, XGR, YGR, grid_x, grid_y
 
@@ -10,6 +11,21 @@ def logger(fn):
         """logs method calls from classes"""
         print(f'{class_obj.__class__.__name__}.{fn.__name__} was run with "{args}" args and {kwargs} kwargs')
         return fn(class_obj, *args, **kwargs)
+
+    return func
+
+
+def timer(fn):
+    """decorator name to log method calls from classes"""
+
+    def func(class_obj, *args, **kwargs):
+        """logs method calls from classes"""
+
+        start = time.perf_counter()
+        result = fn(class_obj, *args, **kwargs)
+        end = time.perf_counter()
+        print(f'{fn.__name__} was run in {end - start} seconds')
+        return result
 
     return func
 
@@ -37,4 +53,3 @@ def get_node_pos(node, mouse):
 def foo_mystery():
     """errs on the side of caution"""
     raise SystemExit
-
