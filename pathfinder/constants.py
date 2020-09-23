@@ -28,7 +28,14 @@ OFFSET = 3
 ZERO = (0, 0)
 XGR = (grid_x - 1, 0)
 YGR = (0, grid_y - 1)
-weighted = ['astar', 'dijkstra', 'greedy']
+weighted = ('astar', 'dijkstra', 'greedy')
 search_speed = 0.0065
 TOP_LEFT_X = HEIGHT // grid_y * 0 + OFFSET
 TOP_LEFT_Y = HEIGHT // grid_y * 0 + OFFSET
+SEARCH_COLORS = (dark_pink, blue, yellow)
+TARGET_COLORS = [red, green, pink]
+THE_GRID = {}
+for x in range(grid_x):
+    for y in range(grid_y):
+        THE_GRID[(x, y)] = float("inf")
+
