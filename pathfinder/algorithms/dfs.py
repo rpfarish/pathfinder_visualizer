@@ -1,9 +1,9 @@
-"""dfs"""
-from pathfinder.search.adjacent_nodes import adjacent_nodes
+"""Depth-First Search"""
+from .adjacent_nodes import adjacent_nodes
 
-# def bfs(start, end, wall, grid_size):
+
 def dfs(start, end, wall, grid_size):
-    """dfs"""
+    """Depth-First Search"""
     stack = [start]
     visited = []
     parent = {start: None}
@@ -28,19 +28,18 @@ def dfs(start, end, wall, grid_size):
 
     return level, parent, visited
 
-# return level, parent, searched_nodes
 
 if __name__ == "__main__":
-    a, parent, c = dfs((0, 0), [(1, 1), (1, 2), (0, 2)], (5, 5), (3, 1))
+    _start = (0, 0)
+    _end = (3, 1)
+    a, _parent, c = dfs(_start, _end, [(1, 1), (1, 2), (0, 2)], (5, 5))
     ra = a[::-1]
-    start = (0, 0)
-    end = (3, 1)
 
-    if end in parent:
-        end_parent = parent[end]
+    if _end in _parent:
+        end_parent = _parent[_end]
         path = [end_parent]
         while end_parent is not None:
-            end_parent = parent[end_parent]
+            end_parent = _parent[end_parent]
             path.append(end_parent)
         print(ra)
         print(path)
