@@ -1,11 +1,11 @@
-"""visualizes the grid"""
+"""Visualizes the Grid class"""
 import time
 from math import log
 
 import pygame
 
-from .constants import green, orange, pink, red, yellow
-from .node import Grid
+from pathfinder.constants import green, orange, pink, red, weighted, yellow
+from pathfinder.node import Grid
 
 
 class Visualize:
@@ -13,13 +13,16 @@ class Visualize:
     visualizer class
     nodes is an object of Grid
     """
-    targets = [red, green, pink, orange]
+
     cache = []
 
-    # @logger
-    def __init__(self, nodes: Grid, start, end, end_color, alg, win, color, search_speed, level, parent, searched):
-        self.nodes = nodes
+    def __init__(self, nodes: Grid, start, end, end_color, alg, win, color,
+                 search_speed, level, parent, searched):
+        self.targets = [red, green, pink]
+        if alg in weighted:
+            self.targets.append(orange)
         self.search_speed = search_speed
+        self.nodes = nodes
         self.win = win
         self.alg = alg
         self.start = start
@@ -35,101 +38,97 @@ class Visualize:
     @staticmethod
     def pygame_quit():
         """
-        Allows the user to exit and keeps the window from freezing
+        Allows the user to exit
+        and keeps the window from freezing
+        silences the pygame display not init error
         """
         try:
-            for event_ in pygame.event.get():
-                if event_.type == pygame.QUIT:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
                     pygame.quit()
-            keys_ = pygame.key.get_pressed()
-            if keys_[pygame.K_BACKSPACE]:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_BACKSPACE]:
                 raise SystemExit
-            if keys_[pygame.K_ESCAPE]:
+            elif keys[pygame.K_ESCAPE]:
                 raise SystemExit
         except pygame.error:
-            # the video system not initialized
             pass
 
-    def call_alg(self):
+    def search(self):
         """
         Calls the correct alg for visualization
         :returns: if solution found :type: bool
         """
         if self.alg == 'bfs' or self.alg == 'dfs':
             return self.visualize()
-        elif self.alg == 'dijkstra' or self.alg == 'astar' or self.alg == 'greedy':
+        elif self.alg == 'dijkstra' or self.alg == 'astar':
+            return self.visualize()
+        elif self.alg == 'greedy':
             return self.visualize()
 
-    def clear(self):
-        """
-         Sends a tuple of colors to clear
-        """
-        self.nodes.clear_searched(self.win, (self.area_color,))
-        self.nodes.clear_searched(self.win, (yellow,))
-
-    def render(self, node: Grid):
-        """
-        Draws and then caches a node
-        :param node:
-        """
+    def _render(self, node: Grid):
+        """draws and then caches a node"""
         self.nodes.grid[node].draw(self.win)
         self.cache.append(self.nodes.grid[node].rect_obj)
 
-    def update(self, node, clear=False):
-        """
-        Renders and then updates the display
-        :param node:
-        :param clear:
-        """
-        self.render(node)
+    def _update(self, node, clear=False):
+        """renders and then updates the display"""
+        self._render(node)
         pygame.display.update(self.cache)
         if clear:
             self.cache.clear()
 
-    def draw_path(self):
-        """
-        Visualizes the path
-        """
-        if self.end in self.parent:
-            end_node = self.end
-            end_parent = self.parent[end_node]
-            path = [end_parent]
+    def _get_path(self):
+        end_parent = self.parent[self.end]
+        path = [end_parent]
 
-            # find the shortest path starting at the end node in the parent dictionary
-            while end_parent is not None:
-                end_parent = self.parent[end_parent]
+        while True:
+            end_parent = self.parent[end_parent]
+            if end_parent is None:
+                break
+            else:
                 path.append(end_parent)
 
-            for i in reversed(range(len(path)-2)):
+        return path
+
+    def draw_path(self):
+        """visualizes the path"""
+        if self.end in self.parent:
+
+            for node in reversed(self._get_path()):
                 self.pygame_quit()
-                node = path[i]
+
                 if self.nodes.grid[node].color not in self.targets:
                     self.nodes.grid[node].color = yellow
-                    self.update(node)
+                    self.nodes.grid[node].is_target = True
+                    self._update(node, clear=True)
+                    self.nodes.grid[node].is_target = False
+                    # time.sleep(1)
                     time.sleep(0.08)
+                    self._render(node)
+            else:
+                pygame.display.flip()
 
     def visualize(self):
-        """
-        Draws the search area
-        """
+        """draws the search area"""
         for i, node in enumerate(self.searched_nodes, 1):
             # allow user to exit
             self.pygame_quit()
 
             # stop visualization if end was found
             if self.nodes.grid[node].color == self.end_color:
-                self.update(node, clear=True)
+                self._update(node, clear=True)
                 return True
+
             elif self.nodes.grid[node].color not in self.targets:
 
                 self.nodes.grid[node].color = yellow
 
-                self.update(node, clear=True)
+                self._update(node, clear=True)
                 time.sleep(self.search_speed * log(i, 8))
                 self.nodes.grid[node].color = self.area_color
-                self.render(node)
-                # self.update(node, sleep=True)
-                # time.sleep(self.search_speed)
+                self._render(node)
+
         else:
             print('No solution was found')
             return False
