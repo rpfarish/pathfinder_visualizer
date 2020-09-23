@@ -1,20 +1,21 @@
-from pathfinder.search.adjacent_nodes import adjacent_nodes
 from queue import PriorityQueue
 
+from pathfinder.constants import THE_GRID
+from .adjacent_nodes import adjacent_nodes
 
-def dijkstra(start, end, wall, grid_size,  weight_li):
+
+def dijkstra(start, end, wall, grid_size, weight_li):
     """
     The famous Dijkstra's Algorithm invented by Edsger Dijkstra and
     implemented with a priority queue.
     """
-    grid = {}
+    grid = THE_GRID.copy()
     prev = {start: None}
     queue = PriorityQueue()
 
-    for x in range(grid_size[0] + 1):
-        for y in range(grid_size[1] + 1):
-            if (x, y) not in wall:
-                grid[(x, y)] = float("inf")
+    for i in THE_GRID:
+        if i in wall:
+            grid.pop(i)
 
     queue.put((0, start))
     grid[start] = 0
@@ -37,4 +38,4 @@ def dijkstra(start, end, wall, grid_size,  weight_li):
 
 
 if __name__ == "__main__":
-    print(dijkstra((0, 0), (6, 6), [], (10-1, 10-1),  {(i, j): 1 for j in range(10) for i in range(10)}))
+    print(dijkstra((0, 0), (6, 6), [], (10 - 1, 10 - 1), {(i, j): 1 for j in range(10) for i in range(10)}))
