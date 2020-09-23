@@ -7,7 +7,7 @@ except (ImportError, IOError):
     quit(code="Pathfinder.node is missing")
 
 try:
-    import pathfinder.constants
+    from pathfinder.constants import *
 except (ImportError, IOError):
     quit(code="Pathfinder.constants is missing")
 
