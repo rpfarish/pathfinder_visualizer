@@ -1,7 +1,7 @@
 """Visualizes the Grid class"""
 import time
 from math import log
-# update code here
+
 import pygame
 
 from pathfinder.constants import green, orange, pink, red, weighted, yellow
