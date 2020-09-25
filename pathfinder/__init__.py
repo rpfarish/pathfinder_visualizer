@@ -1,5 +1,4 @@
 """Pathfinder is a set of Python modules designed for visualizing paths between two points"""
-# make a packages module and put pygame and other imports in there
 
 try:
     import pathfinder.node
