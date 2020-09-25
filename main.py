@@ -1,6 +1,6 @@
 """Controls entire project"""
 import os
-
+assert False
 import pygame
 
 import pathfinder as pf
