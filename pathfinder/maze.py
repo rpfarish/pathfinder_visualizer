@@ -27,16 +27,15 @@ class Maze:
                         graph.grid[(x, y)].make_wall()
         else:
             graph.draw_grid(win)
-    #
-    # def basic_weight_maze(self, win, graph: Grid):
-    #     """Basic random distribution maze"""
-    #     _clear(win, graph, SEARCH_COLORS)
-    #     _clear(win, graph, orange)
-    #     for x in range(self.grid_x):
-    #         for y in range(self.grid_y):
-    #             if graph.grid[(x, y)].color not in TARGET_COLORS:
-    #                 if randrange(0, 100) < 30:
-    #                     graph.grid[(x, y)].make_weight()
-    #
-    #     else:
-    #         graph.draw_grid(win)
+
+    def basic_weight_maze(self, win, graph: Grid):
+        """Basic random distribution maze"""
+        _clear(win, graph)
+        for x in range(self.grid_x):
+            for y in range(self.grid_y):
+                if graph.grid[(x, y)].color not in TARGET_COLORS:
+                    if randrange(0, 100) < 30:
+                        graph.grid[(x, y)].make_weight()
+
+        else:
+            graph.draw_grid(win)

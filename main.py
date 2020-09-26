@@ -118,11 +118,11 @@ def main():
 
         # - Mazes -
 
-        # # Basic weight maze
-        # elif keys[pygame.K_LSHIFT] and keys[pygame.K_m]:
-        #     if alg_name in pf.weighted:
-        #         maze.basic_weight_maze(WIN, graph)
-        #         redraw_window(WIN)
+        # Basic weight maze
+        elif keys[pygame.K_LSHIFT] and keys[pygame.K_m]:
+            if alg_name in pf.weighted:
+                maze.basic_weight_maze(WIN, graph)
+                redraw_window(WIN)
 
         # Basic random maze
         elif keys[pygame.K_m]:
