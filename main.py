@@ -18,7 +18,7 @@ pygame.display.set_icon(WIN)
 
 # - load assets -
 
-TARGET = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'bla.png')), (25//2, 25//2))
+TARGET = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'bla.png')), (25 // 2, 25 // 2))
 
 
 def main():
@@ -47,6 +47,12 @@ def main():
     WIN.fill((175, 216, 248))
     redraw_window(WIN)
 
+    def set_alg(alg_):
+        """resets weights if alg is switched to unweighted"""
+        if alg_ not in pf.weighted:
+            graph.clear_weights(WIN)
+        return alg_
+
     while True:
 
         # - Pygame events -
@@ -67,23 +73,23 @@ def main():
 
         # A*
         if keys[pygame.K_a] and keys[pygame.K_LSHIFT]:
-            alg_name = 'astar'
+            alg_name = set_alg('astar')
 
         # Dijkstra
         elif keys[pygame.K_d] and keys[pygame.K_LSHIFT]:
-            alg_name = 'dijkstra'
+            alg_name = set_alg('dijkstra')
 
         # BFS
         elif keys[pygame.K_b] and keys[pygame.K_LSHIFT]:
-            alg_name = 'bfs'
+            alg_name = set_alg('bfs')
 
         # DFS
         elif keys[pygame.K_f] and keys[pygame.K_LSHIFT]:
-            alg_name = 'dfs'
+            alg_name = set_alg('dfs')
 
         # Greedy
         elif keys[pygame.K_g] and keys[pygame.K_LSHIFT]:
-            alg_name = 'greedy'
+            alg_name = set_alg('greedy')
 
         # - Set node state -
 
@@ -155,8 +161,6 @@ def main():
                 alg.run_alg(WIN, graph, [pf.blue])
 
             print('Visualization done')
-
-
 
 
 if __name__ == '__main__':

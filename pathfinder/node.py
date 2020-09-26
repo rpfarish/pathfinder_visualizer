@@ -80,11 +80,12 @@ class Grid:
             self.grid[node].clear()
             self.draw_node(win, node)
 
-    # def clear_weights(self, win):
-    #     """resets all weights nodes"""
-    #     for node in self.weights:
-    #         self.grid[node].clear()
-    #         self.draw_node(win, node)
+    def clear_weights(self, win):
+        """resets all weights nodes"""
+        for node in self.grid:
+            if self.grid[node].color == orange:
+                self.grid[node].clear()
+                self.draw_node(win, node)
 
     def clear_node(self, win, node, draw=False):
         """resets the state of the node based on its current color"""
