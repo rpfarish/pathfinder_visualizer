@@ -103,17 +103,22 @@ class Grid:
         if draw:
             self.draw_node(win, node)
 
-    def clear(self, win):
+    def clear(self, win, reset_targets=True):
         """
         Resets all nodes in grid by calling clear_node
         on every object in grid.
         """
+        start = self.start
+        end = self.end
         for node in self.grid:
             if self.grid[node].color != white:
                 self.clear_node(win, node, True)
-        else:
+        if reset_targets:
             self.set_start(win, (int(grid_x * .25), grid_y // 2))
             self.set_end(win, (int(grid_x * .75), grid_y // 2))
+        else:
+            self.set_start(win, start)
+            self.set_end(win, end)
 
     def draw_node(self, win, node):
         """draws the node then caches its rect object to draw later"""
