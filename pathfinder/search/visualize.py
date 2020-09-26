@@ -91,6 +91,14 @@ class Visualize:
 
         return path
 
+    def _draw_path_node(self, node):
+        self.nodes.grid[node].is_target = True
+        self._update(node, clear=True)
+        self.nodes.grid[node].is_target = False
+        # time.sleep(1)
+        time.sleep(0.08)
+        self._render(node)
+
     def draw_path(self):
         """visualizes the path"""
         if self.end in self.parent:
@@ -100,12 +108,11 @@ class Visualize:
 
                 if self.nodes.grid[node].color not in self.targets:
                     self.nodes.grid[node].color = yellow
-                    self.nodes.grid[node].is_target = True
-                    self._update(node, clear=True)
-                    self.nodes.grid[node].is_target = False
-                    # time.sleep(1)
-                    time.sleep(0.08)
-                    self._render(node)
+                    self._draw_path_node(node)
+
+                elif self.nodes.grid[node].color == orange:
+                    self._draw_path_node(node)
+
             else:
                 pygame.display.flip()
 
