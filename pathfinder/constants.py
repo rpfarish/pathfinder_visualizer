@@ -1,4 +1,8 @@
 """Constants go here"""
+import os
+
+import pygame
+
 light_gray = (175, 175, 175)
 medium_gray = (140, 140, 140)
 dark_gray = (110, 110, 110)
@@ -22,13 +26,15 @@ black = (12, 53, 71)
 # black = (0, 0, 0)
 
 grid_x, grid_y = 50, 25
-grid_offset = (grid_x-1, grid_y-1)
+grid_offset = (grid_x - 1, grid_y - 1)
 WIDTH, HEIGHT = 1400, 700
 OFFSET = 3
 ZERO = (0, 0)
 XGR = (grid_x - 1, 0)
 YGR = (0, grid_y - 1)
 weighted = ('astar', 'dijkstra', 'greedy')
+node_size = (25, 25)
+spaceship = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), node_size)
 search_speed = 0.0065
 TOP_LEFT_X = HEIGHT // grid_y * 0 + OFFSET
 TOP_LEFT_Y = HEIGHT // grid_y * 0 + OFFSET
@@ -38,4 +44,3 @@ THE_GRID = {}
 for x in range(grid_x):
     for y in range(grid_y):
         THE_GRID[(x, y)] = float("inf")
-
