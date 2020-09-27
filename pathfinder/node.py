@@ -1,13 +1,12 @@
 """Creates and controls the getting setting of Node objects"""
-import os
 
 import pygame
 
-from .constants import HEIGHT, OFFSET, black, green, grid_x, grid_y, orange, pink, red, weighted, white
+from .constants import HEIGHT, OFFSET, black, green, grid_x, grid_y, node_size, orange, pink, red, spaceship, \
+    weighted, \
+    white
 
-node_size = (25, 25)
-
-TARGET = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), node_size)
+TARGET = spaceship
 
 
 class Grid:
@@ -28,6 +27,7 @@ class Grid:
         self.grid[self.end].make_end()
 
         self.bomb = (None, None)
+        # todo visualized does nothing
         self.visualized = False
         self.weight = 10
 
@@ -170,30 +170,50 @@ class Node:
     The class to set states,
     draws and get states for each node in the grid.
     """
+    _offset = 1
 
     def __init__(self, win, color, x, y, width, height,
                  x_coord=None, y_coord=None):
+
+        self.win = win
         self.color = color
         self.x = HEIGHT // grid_y * x + OFFSET if x_coord is None else x_coord
         self.y = HEIGHT // grid_y * y + OFFSET if y_coord is None else y_coord
         self.x_coord = x
         self.y_coord = y
-        self.width = width + 1
-        self.height = height + 1
+        self.width = width + Node._offset
+        self.height = height + Node._offset
         self.rect_obj = pygame.draw.rect(
             win, self.color, (self.x, self.y, self.width, self.height)
         )
         self.dragging = False
         self.is_target = False
 
+    def __eq__(self, other):
+        if not isinstance(self, type(self)) or type(self) is not type(other):
+            return False
+
+        if len(self.__dict__) != len(other.__dict__):
+            return False
+
+        if self.x == other.x and self.y == other.y and self.width == other.width and self.height == other.height \
+                and self.color == other.color and self.x_coord == other.y_coord and self.x_coord == other.y_coord \
+                and self.dragging == other.dragging and self.is_target == other.is_target:
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self == other
+
     def __repr__(self):
-        return f'{self.__class__.__name__}({self.color}, {self.x_coord}, ' \
-               f'{self.y_coord}, {self.width}, {self.height}, {self.x}, {self.y})'
+        return f'{self.__class__.__name__}({self.win}, {self.color}, {self.x_coord}, ' \
+               f'{self.y_coord}, {self.width - self.__class__._offset}, {self.height - self.__class__._offset})'
 
     def __str__(self):
-        return f'Class Name:{self.__class__.__name__} Color: {self.color}, ' \
-               f'X Position: {self.x_coord}, Y Position: {self.y_coord}, ' \
-               f'Width: {self.width}, Height: {self.height}, X: {self.x}, Y: {self.y})'
+        return f'class name: {self.__class__.__name__},  color: {self.color}, ' \
+               f'x coord: {self.x_coord}, y coord: {self.y_coord}, ' \
+               f'width: {self.width}, height: {self.height}, x pos: {self.x}, y pos: {self.y})'
 
     def draw(self, win, redraw=False):
         """
