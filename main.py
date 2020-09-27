@@ -1,5 +1,4 @@
 """Controls entire project"""
-import os
 
 import pygame
 
@@ -9,16 +8,12 @@ from pathfinder.node import Grid
 from pathfinder.search import Algorithm
 from pathfinder.utils import get_node_pos
 
-version = '2.8.1'
+version = '2.8.7'
 
 # - Pygame init -
 WIN = pygame.display.set_mode((pf.WIDTH, pf.HEIGHT))
 pygame.display.set_caption(f"Pathfinder v{version}")
 pygame.display.set_icon(WIN)
-
-# - load assets -
-
-TARGET = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'bla.png')), (25 // 2, 25 // 2))
 
 
 def main():
@@ -72,23 +67,23 @@ def main():
         # - Set alg names -
 
         # A*
-        if keys[pygame.K_a] and keys[pygame.K_LSHIFT]:
+        if keys[pygame.K_a] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             alg_name = set_alg('astar')
 
         # Dijkstra
-        elif keys[pygame.K_d] and keys[pygame.K_LSHIFT]:
+        elif keys[pygame.K_d] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             alg_name = set_alg('dijkstra')
 
         # BFS
-        elif keys[pygame.K_b] and keys[pygame.K_LSHIFT]:
+        elif keys[pygame.K_b] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             alg_name = set_alg('bfs')
 
         # DFS
-        elif keys[pygame.K_f] and keys[pygame.K_LSHIFT]:
+        elif keys[pygame.K_f] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             alg_name = set_alg('dfs')
 
         # Greedy
-        elif keys[pygame.K_g] and keys[pygame.K_LSHIFT]:
+        elif keys[pygame.K_g] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             alg_name = set_alg('greedy')
 
         # - Set node state -
@@ -125,7 +120,7 @@ def main():
         # - Mazes -
 
         # Basic weight maze
-        elif keys[pygame.K_LSHIFT] and keys[pygame.K_m]:
+        elif keys[pygame.K_m] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             if alg_name in pf.weighted:
                 maze.basic_weight_maze(WIN, graph)
                 redraw_window(WIN)
