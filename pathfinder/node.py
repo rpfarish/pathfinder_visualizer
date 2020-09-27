@@ -3,8 +3,7 @@
 import pygame
 
 from .constants import HEIGHT, OFFSET, black, green, grid_x, grid_y, node_size, orange, pink, red, spaceship, \
-    weighted, \
-    white
+    weighted, white
 
 TARGET = spaceship
 
