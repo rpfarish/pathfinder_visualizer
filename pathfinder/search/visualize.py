@@ -7,12 +7,32 @@ import pygame
 from pathfinder.constants import green, orange, pink, red, weighted, yellow
 from pathfinder.node import Grid
 
+used_keys = [pygame.K_p, pygame.K_SPACE]
+
+
+def increment_keyslock(keys):
+    for i in used_keys:
+        if keys[i]:
+            Visualize.keyslock[i] = 1
+        else:
+            Visualize.keyslock[i] = 0
+
+
+def keylock(index, keys):
+    if keys[index] and Visualize.keyslock[index] == 0:
+        Visualize.keyslock[index] = 1
+        return True
+    else:
+        return False
+
 
 class Visualize:
     """
     visualizer class
     nodes is an object of Grid
     """
+
+    keyslock = [0 for _ in range(512)]
 
     cache = []
 
@@ -48,9 +68,25 @@ class Visualize:
                     pygame.quit()
             keys = pygame.key.get_pressed()
             if keys[pygame.K_BACKSPACE]:
-                raise SystemExit
+                return True
             elif keys[pygame.K_ESCAPE]:
                 raise SystemExit
+            elif keylock(pygame.K_p, keys):
+                while True:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                    keys = pygame.key.get_pressed()
+                    if keylock(pygame.K_p, keys) or keylock(pygame.K_SPACE, keys):
+                        break
+                    elif keys[pygame.K_BACKSPACE]:
+                        return None
+                    elif keys[pygame.K_ESCAPE]:
+                        raise SystemExit
+                    increment_keyslock(keys)
+            increment_keyslock(keys)
+
+            return False
         except pygame.error:
             pass
 
@@ -104,7 +140,8 @@ class Visualize:
         if self.end in self.parent:
 
             for node in reversed(self._get_path()):
-                self.pygame_quit()
+                if self.pygame_quit():
+                    return
 
                 if self.nodes.grid[node].color not in self.targets:
                     self.nodes.grid[node].color = yellow
@@ -120,7 +157,8 @@ class Visualize:
         """draws the search area"""
         for i, node in enumerate(self.searched_nodes, 1):
             # allow user to exit
-            self.pygame_quit()
+            if self.pygame_quit():
+                return None
 
             # stop visualization if end was found
             if self.nodes.grid[node].color == self.end_color:
