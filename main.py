@@ -46,6 +46,10 @@ def main():
         """resets weights if alg is switched to unweighted"""
         if alg_ not in pf.weighted:
             graph.clear_weights(WIN)
+            for color in pf.SEARCH_COLORS:
+                graph.clear_searched(WIN, (color,))
+            else:
+                graph.clear_searched(WIN, (pf.yellow,))
         return alg_
 
     while True:
