@@ -122,7 +122,7 @@ class Grid:
         else:
             self.set_start(win, start)
             self.set_end(win, end)
-            if self.has_bomb:
+            if bomb != (None, None):
                 self.set_bomb(win, bomb)
 
     def draw_node(self, win, node):
