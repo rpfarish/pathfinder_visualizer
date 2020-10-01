@@ -1,6 +1,7 @@
 """Maze generation"""
 from random import randrange
 
+from .algorithms import greedy
 from .constants import TARGET_COLORS, green, pink, red
 from .node import Grid
 
@@ -17,6 +18,21 @@ class Maze:
         self.grid_y = grid_y
         self.node_colors = [red, green, pink]
 
+    def waypoint(self, graph, start, end):
+        """:returns if there is a path between start and end"""
+        score, *_ = greedy(start, end, graph.walls,
+                           (self.grid_x - 1, self.grid_y - 1), graph.weights)
+
+        return False if score[end] == float('inf') else True
+
+    def has_solution(self, graph):
+        """:returns if there is a path between all nodes on graph"""
+        if graph.has_bomb:
+            return True if self.waypoint(graph, graph.start, graph.bomb) \
+                           and self.waypoint(graph, graph.bomb, graph.end) else False
+
+        return True if self.waypoint(graph, graph.start, graph.end) else False
+
     def basic_random_maze(self, win, graph: Grid):
         """Basic random distribution maze"""
         _clear(win, graph)
@@ -26,7 +42,10 @@ class Maze:
                     if randrange(0, 100) < 30:
                         graph.grid[(x, y)].make_wall()
         else:
-            graph.draw_grid(win)
+            if self.has_solution(graph):
+                graph.draw_grid(win)
+            else:
+                self.basic_random_maze(win, graph)
 
     def basic_weight_maze(self, win, graph: Grid):
         """Basic random distribution maze"""
@@ -36,6 +55,5 @@ class Maze:
                 if graph.grid[(x, y)].color not in TARGET_COLORS:
                     if randrange(0, 100) < 30:
                         graph.grid[(x, y)].make_weight()
-
         else:
             graph.draw_grid(win)
