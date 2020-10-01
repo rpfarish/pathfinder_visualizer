@@ -141,21 +141,24 @@ def main():
 
         # Start Visualization
         if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
+
+            if graph.start == (None, None) or graph.end == (None, None):
+                print('Invalid start or end nodes')
+                continue
+
             print('Visualization started with:', alg_name.title())
 
-            if graph.has_bomb:
-                node_list = [graph.start, graph.bomb, graph.end]
-                search_colors = [pf.dark_pink, pf.blue]
-                alg = Algorithm(alg_name, node_list, graph.walls,
-                                pf.grid_offset, graph.weights)
-
-            elif not graph.has_bomb:
+            if not graph.has_bomb:
                 node_list = [graph.start, graph.end]
                 search_colors = [pf.blue]
-                alg = Algorithm(alg_name, node_list, graph.walls,
-                                pf.grid_offset, graph.weights)
+            else:
+                node_list = [graph.start, graph.bomb, graph.end]
+                search_colors = [pf.dark_pink, pf.blue]
 
+            alg = Algorithm(alg_name, node_list, pf.grid_offset,
+                            graph.walls, graph.weights)
             alg.run_alg(WIN, graph, search_colors)
+
             print('Visualization done')
 
 
