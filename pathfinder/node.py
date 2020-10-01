@@ -110,15 +110,20 @@ class Grid:
         """
         start = self.start
         end = self.end
+        bomb = self.bomb
         for node in self.grid:
             if self.grid[node].color != white:
                 self.clear_node(win, node, True)
         if reset_targets:
             self.set_start(win, (int(grid_x * .25), grid_y // 2))
             self.set_end(win, (int(grid_x * .75), grid_y // 2))
+            self.has_bomb = False
+            self.bomb = (None, None)
         else:
             self.set_start(win, start)
             self.set_end(win, end)
+            if self.has_bomb:
+                self.set_bomb(win, bomb)
 
     def draw_node(self, win, node):
         """draws the node then caches its rect object to draw later"""
