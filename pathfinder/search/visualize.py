@@ -35,13 +35,16 @@ class Visualize:
     keyslock = [0 for _ in range(512)]
 
     cache = []
+    objs = []
 
     def __init__(self, nodes: Grid, start, end, end_color, alg, win, color,
                  search_speed, level, parent, searched):
+        Visualize.objs.append(self)
         self.targets = [red, green, pink]
         if alg in weighted:
             self.targets.append(orange)
-        self.search_speed = search_speed
+        self.speed = search_speed
+        self._speed = search_speed
         self.nodes = nodes
         self.win = win
         self.alg = alg
@@ -54,6 +57,14 @@ class Visualize:
         self.searched_nodes = searched
         self.tail = None
         nodes.visualized = True
+
+    def __len__(self):
+        return len(self._get_path())
+
+    def __repr__(self):
+        return f"""{self.__class__.__name__}({self.nodes}, {self.start}, {self.end},
+                    {self.end_color}, {self.alg}, {self.win}, {self.area_color},
+                    {self._speed}, {self.level}, {self.parent}, {self.searched_nodes})"""
 
     @staticmethod
     def pygame_quit():
@@ -90,17 +101,9 @@ class Visualize:
         except pygame.error:
             pass
 
-    def search(self):
-        """
-        Calls the correct alg for visualization
-        :returns: if solution found :type: bool
-        """
-        if self.alg == 'bfs' or self.alg == 'dfs':
-            return self.visualize()
-        elif self.alg == 'dijkstra' or self.alg == 'astar':
-            return self.visualize()
-        elif self.alg == 'greedy':
-            return self.visualize()
+    @property
+    def search_speed(self):
+        return self.speed if self.alg != 'dijkstra' else 0
 
     def _render(self, node: Grid):
         """draws and then caches a node"""
@@ -132,7 +135,7 @@ class Visualize:
         self._update(node, clear=True)
         self.nodes.grid[node].is_target = False
         # time.sleep(1)
-        time.sleep(0.08)
+        time.sleep(0.07)
         self._render(node)
 
     def draw_path(self):
@@ -153,7 +156,7 @@ class Visualize:
             else:
                 pygame.display.flip()
 
-    def visualize(self):
+    def draw_search_area(self):
         """draws the search area"""
         for i, node in enumerate(self.searched_nodes, 1):
             # allow user to exit

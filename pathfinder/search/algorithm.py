@@ -1,4 +1,5 @@
 """API to access and run the main path search"""
+
 from pathfinder.algorithms import *
 from pathfinder.constants import SEARCH_COLORS, search_speed, yellow
 from pathfinder.node import Grid
@@ -18,19 +19,16 @@ class Algorithm:
     unweighted_funcs = {'bfs': bfs, 'dfs': dfs}
     weighted_funcs = {'astar': astar, 'dijkstra': dijkstra, 'greedy': greedy}
 
-    unweighted = ['bfs', 'dfs']
-    weighted = ['astar', 'dijkstra', 'greedy']
-
-    def __init__(self, alg, node_list, walls, grid_size, weights):
+    def __init__(self, alg, node_list, grid_size, walls, weights):
         self.alg = alg
         self.node_list = node_list
-        self.walls = walls
         self.grid_size = grid_size
+        self.walls = walls
         self.weights = weights
         self.node_count = 0
         self.clear_colors = []
         self.area = []
-        self.visualize_objs = []
+        self.vis_objs = []
 
     @property
     def _start(self):
@@ -44,41 +42,50 @@ class Algorithm:
     def _get_search_data(self):
         """:returns result of the search"""
 
-        if self._start != (None, None) and self._end != (None, None):
-            if self.alg in self.unweighted:
-                return self._call_unweighted()
+        if self.alg in self.unweighted_funcs:
+            return self._call_unweighted()
 
-            elif self.alg in self.weighted:
-                return self._call_weighted()
+        elif self.alg in self.weighted_funcs:
+            return self._call_weighted()
+
+    @property
+    def _unweighted_params(self):
+        return self._start, self._end, self.walls, self.grid_size
 
     def _call_unweighted(self):
-        return self.unweighted_funcs[self.alg](self._start, self._end, self.walls, self.grid_size)
+        return self.unweighted_funcs[self.alg](*self._unweighted_params)
 
     def _call_weighted(self):
-        return self.weighted_funcs[self.alg](self._start, self._end, self.walls, self.grid_size, self.weights)
+        return self.weighted_funcs[self.alg](*self._unweighted_params, self.weights)
 
-    def _get_visualize(self, win, graph, area_color, level, parent, searched):
-        """:returns an instance of Visualize class"""
-        return Visualize(graph, self._start, self._end, graph.grid[self._end].color,
-                         self.alg, win, area_color, search_speed, level, parent, searched)
-
-    def run_alg(self, win, graph: Grid, area_color):
+    def __call__(self, win, graph: Grid, area_color):
         """searches and then visualizes the area and path"""
         self.clear_colors = SEARCH_COLORS
         self._clear(win, graph)
         for i in range(len(self.node_list) - 1):
-            v = self._get_visualize(win, graph, area_color[i], *self._get_search_data())
-            self.visualize_objs.append(v)
+            # do the search with the alg and get the result
+            node_score, parent, visited = self._get_search_data()
+
+            # cache visualizable object
+            Visualize(graph, self._start, self._end, graph.grid[self._end].color,
+                      self.alg, win, area_color[i], search_speed, node_score, parent, visited)
+
             self.node_count += 1
         else:
             # visualize area
-            for node in self.visualize_objs:
-                node.search()
+            for vis in Visualize.objs:
+                end_found = vis.draw_search_area()
+                if not end_found:
+                    Visualize.objs.clear()
+                    return
 
             # draw path
-            for node in self.visualize_objs:
-                node.draw_path()
+            for vis in Visualize.objs:
+                vis.draw_path()
+                print(len(vis))
+
             self.node_count = 0
+            Visualize.objs.clear()
 
     def _clear(self, win, graph):
         """calls to class Grid to clear """
