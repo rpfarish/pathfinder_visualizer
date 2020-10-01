@@ -157,7 +157,7 @@ def main():
 
             alg = Algorithm(alg_name, node_list, pf.grid_offset,
                             graph.walls, graph.weights)
-            alg.run_alg(WIN, graph, search_colors)
+            alg(WIN, graph, search_colors)
 
             print('Visualization done')
 
