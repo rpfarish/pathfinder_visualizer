@@ -1,4 +1,5 @@
 """This module does blah blah."""
+import functools
 import time
 
 from .constants import OFFSET, XGR, YGR, grid_x, grid_y
@@ -7,6 +8,7 @@ from .constants import OFFSET, XGR, YGR, grid_x, grid_y
 def logger(fn):
     """decorator name to log method calls from classes"""
 
+    @functools.wraps(fn)
     def func(class_obj, *args, **kwargs):
         """logs method calls from classes"""
         print(f'{class_obj.__class__.__name__}.{fn.__name__} was run with "{args}" args and {kwargs} kwargs')
@@ -18,6 +20,7 @@ def logger(fn):
 def timer(fn):
     """decorator name to log method calls from classes"""
 
+    @functools.wraps(fn)
     def func(class_obj, *args, **kwargs):
         """logs method calls from classes"""
 
