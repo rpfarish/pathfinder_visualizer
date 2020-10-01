@@ -11,7 +11,7 @@ def dfs(start, end, wall, grid_size):
     for x in range(grid_size[0] + 1):
         for y in range(grid_size[1] + 1):
             if (x, y) not in wall:
-                level[(x, y)] = 1
+                level[(x, y)] = float('inf')
     while stack:
         curr = stack.pop()
 
@@ -19,6 +19,7 @@ def dfs(start, end, wall, grid_size):
             visited.append(curr)
 
         if curr == end:
+            level[end] = 1
             return level, parent, visited
 
         for adj in adjacent_nodes(curr, wall, grid_size):
