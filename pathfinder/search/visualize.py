@@ -103,7 +103,7 @@ class Visualize:
 
     @property
     def search_speed(self):
-        return self.speed if self.alg != 'dijkstra' else 0
+        return self.speed if self.alg != 'dijkstra' else self.speed * .2
 
     def _render(self, node: Grid):
         """draws and then caches a node"""
