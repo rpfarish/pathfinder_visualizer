@@ -28,7 +28,6 @@ class Algorithm:
         self.node_count = 0
         self.clear_colors = []
         self.area = []
-        self.vis_objs = []
 
     @property
     def _start(self):
