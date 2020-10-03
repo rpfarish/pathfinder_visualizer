@@ -27,6 +27,7 @@ default = {
 
 class Settings:
     """Loads settings from a .json file"""
+    done_loading = False
 
     def __init__(self, file):
         self.file = file
@@ -38,26 +39,39 @@ class Settings:
         self.screen_size = None
         self.search_speed = None
         self.weight_density = None
-        self.load()
 
-    def load(self):
+        self.load_from_json()
+
+    def __setattr__(self, key, value):
+        """
+        Inspect setter for tracking the attributes accessed.
+        """
+        super().__setattr__(key, value)
+        if self.__class__.done_loading:
+            self.save_to_json()
+
+    def load_from_json(self):
         """Open and save attributes from a .json file"""
         with open(self.file) as file:
             settings = json.loads(file.read())
 
         for setting in settings.items():
             setattr(self, *setting)
+        else:
+            self.__class__.done_loading = True
 
-        # self.save()
-
-    def save(self):
+    def save_to_json(self):
+        """Gets class attributes and dumps to .json file"""
         with SaveFile(self.file) as file:
             file.write(json.dumps(self.__dict__))
 
-    # todo implement save method that takes current attributes and writes them to the json file
-
 
 class SaveFile:
+    """
+    Context Manager to save files and if there were any errors
+    loads and saves default settings
+    """
+
     def __init__(self, file):
         self.file = file
         self.file_obj = None
