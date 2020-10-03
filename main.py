@@ -34,8 +34,8 @@ def main():
     clock = pygame.time.Clock()
     graph = Grid(WIN)
     graph.draw_grid(WIN)
-    maze = Maze(pf.grid_size)
-    alg_name = pf.default_alg  # default alg
+    maze = Maze(pf.GRID_SIZE)
+    alg_name = pf.settings.default_alg  # default alg
     # fill and update the display
     WIN.fill((175, 216, 248))
     redraw_window(WIN)
@@ -70,23 +70,23 @@ def main():
 
         # A*
         if keys[pygame.K_a] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            alg_name = set_alg('astar')
+            pf.settings.default_alg = set_alg('astar')
 
         # Dijkstra
         elif keys[pygame.K_d] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            alg_name = set_alg('dijkstra')
+            pf.settings.default_alg = set_alg('dijkstra')
 
         # BFS
         elif keys[pygame.K_b] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            alg_name = set_alg('bfs')
+            pf.settings.default_alg = set_alg('bfs')
 
         # DFS
         elif keys[pygame.K_f] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            alg_name = set_alg('dfs')
+            pf.settings.default_alg = set_alg('dfs')
 
         # Greedy
         elif keys[pygame.K_g] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            alg_name = set_alg('greedy')
+            pf.settings.default_alg = set_alg('greedy')
 
         # - Set node state -
 
@@ -105,7 +105,7 @@ def main():
 
         # Weight
         elif keys[pygame.K_w] and click[0]:
-            graph.set_weight(WIN, node_indices, alg_name)
+            graph.set_weight(WIN, node_indices, pf.settings.default_alg)
 
         # Wall
         elif click[0] and node_indices not in graph.draggable:
@@ -126,7 +126,7 @@ def main():
 
         # Basic weight maze
         elif keys[pygame.K_m] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            if alg_name in pf.settings.weighted:
+            if pf.settings.default_alg in pf.settings.weighted:
                 maze.basic_weight_maze(WIN, graph)
                 redraw_window(WIN)
 
@@ -147,7 +147,7 @@ def main():
                 print('Invalid start or end nodes')
                 continue
 
-            print('Visualization started with:', alg_name.title())
+            print('Visualization started with:', pf.settings.default_alg.title())
 
             if not graph.has_bomb:
                 node_list = [graph.start, graph.end]
@@ -156,7 +156,7 @@ def main():
                 node_list = [graph.start, graph.bomb, graph.end]
                 search_colors = [pf.DARK_PINK, pf.BLUE]
 
-            alg = Algorithm(alg_name, node_list, pf.grid_offset,
+            alg = Algorithm(pf.settings.default_alg, node_list, pf.GRID_OFFSET,
                             graph.walls, graph.weights)
             alg(WIN, graph, search_colors)
 

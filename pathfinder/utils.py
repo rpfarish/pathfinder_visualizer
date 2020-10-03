@@ -2,7 +2,7 @@
 import functools
 import time
 
-from .constants import OFFSET, XGR, YGR, grid_x, grid_y
+from .constants import GRID_X, GRID_Y, OFFSET, XGR, YGR
 
 
 def logger(fn):
@@ -27,7 +27,7 @@ def timer(fn):
         start = time.perf_counter()
         result = fn(class_obj, *args, **kwargs)
         end = time.perf_counter()
-        print(f'{fn.__name__} was run in {end - start} seconds')
+        print(f'{fn.__name__} was run in {round(end - start, 3)} seconds')
         return result
 
     return func
@@ -48,8 +48,8 @@ def remap(x, in_min, in_max, out_min, out_max) -> int:
 
 def get_node_pos(node, mouse):
     """API to remap the value of mouse to an index tuple to access the correct grid member"""
-    cur_node_x = remap(mouse[0], OFFSET, node.grid[XGR].x + node.grid[XGR].width, 0, grid_x)
-    cur_node_y = remap(mouse[1], OFFSET, node.grid[YGR].y + node.grid[YGR].height, 0, grid_y)
+    cur_node_x = remap(mouse[0], OFFSET, node.grid[XGR].x + node.grid[XGR].width, 0, GRID_X)
+    cur_node_y = remap(mouse[1], OFFSET, node.grid[YGR].y + node.grid[YGR].height, 0, GRID_Y)
     return cur_node_x, cur_node_y
 
 

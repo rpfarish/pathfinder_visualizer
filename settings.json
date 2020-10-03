@@ -14,11 +14,12 @@
     25,
     25
   ],
-  "default_alg": "astar",
+  "default_alg": "dijkstra",
   "screen_size": {
     "WIDTH": 1400,
     "HEIGHT": 700
   },
   "search_speed": 0.0055,
-  "weight_density": 15
+  "weight_density": 20,
+  "done_loading": true
 }

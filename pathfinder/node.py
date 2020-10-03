@@ -3,10 +3,10 @@
 import pygame
 
 from . import settings
-from .constants import DARK_BLUE, GREEN, HEIGHT, OFFSET, ORANGE, PINK, RED, WHITE, grid_x, grid_y, node_size, spaceship, \
+from .constants import DARK_BLUE, GREEN, GRID_X, GRID_Y, HEIGHT, OFFSET, ORANGE, PINK, RED, SPACESHIP, WHITE, node_size, \
     weight_density
 
-TARGET = spaceship
+TARGET = SPACESHIP
 
 
 class Grid:
@@ -15,14 +15,14 @@ class Grid:
 
     def __init__(self, win):
         self.grid = {(x, y): Node(win, WHITE, x, y, node_size[0], node_size[1])
-                     for y in range(grid_y) for x in range(grid_x)}
+                     for y in range(GRID_Y) for x in range(GRID_X)}
 
         self.has_start = self.has_end = True
         self.has_bomb = False
 
         # set start and end to the first and third quartiles
-        self.start = (int(grid_x * .25), grid_y // 2)
-        self.end = (int(grid_x * .75), grid_y // 2)
+        self.start = (int(GRID_X * .25), GRID_Y // 2)
+        self.end = (int(GRID_X * .75), GRID_Y // 2)
         self.grid[self.start].make_start()
         self.grid[self.end].make_end()
 
@@ -116,8 +116,8 @@ class Grid:
             if self.grid[node].color != WHITE:
                 self.clear_node(win, node, True)
         if reset_targets:
-            self.set_start(win, (int(grid_x * .25), grid_y // 2))
-            self.set_end(win, (int(grid_x * .75), grid_y // 2))
+            self.set_start(win, (int(GRID_X * .25), GRID_Y // 2))
+            self.set_end(win, (int(GRID_X * .75), GRID_Y // 2))
             self.has_bomb = False
             self.bomb = (None, None)
         else:
@@ -184,8 +184,8 @@ class Node:
 
         self.win = win
         self.color = color
-        self.x = HEIGHT // grid_y * x + OFFSET if x_coord is None else x_coord
-        self.y = HEIGHT // grid_y * y + OFFSET if y_coord is None else y_coord
+        self.x = HEIGHT // GRID_Y * x + OFFSET if x_coord is None else x_coord
+        self.y = HEIGHT // GRID_Y * y + OFFSET if y_coord is None else y_coord
         self.x_coord = x
         self.y_coord = y
         self.width = width + Node._offset
