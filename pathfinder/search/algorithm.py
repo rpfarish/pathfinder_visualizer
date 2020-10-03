@@ -1,10 +1,11 @@
 """API to access and run the main path search"""
 
 from pathfinder.algorithms import *
-from pathfinder.constants import SEARCH_COLORS, search_speed, yellow
+from pathfinder.constants import SEARCH_COLORS, YELLOW
 from pathfinder.node import Grid
 from pathfinder.utils import timer
 from .visualize import Visualize
+from .. import settings
 
 
 class Algorithm:
@@ -68,7 +69,7 @@ class Algorithm:
 
             # cache visualizable object
             Visualize(graph, self._start, self._end, graph.grid[self._end].color,
-                      self.alg, win, area_color[i], search_speed, node_score, parent, visited)
+                      self.alg, win, area_color[i], settings.search_speed, node_score, parent, visited)
 
             self.node_count += 1
         else:
@@ -92,4 +93,4 @@ class Algorithm:
         for color in self.clear_colors:
             graph.clear_searched(win, (color,))
         else:
-            graph.clear_searched(win, (yellow,))
+            graph.clear_searched(win, (YELLOW,))
