@@ -8,11 +8,9 @@ from pathfinder.node import Grid
 from pathfinder.search import Algorithm
 from pathfinder.utils import get_node_pos
 
-version = '2.8.7'
-
 # - Pygame init -
 WIN = pygame.display.set_mode((pf.WIDTH, pf.HEIGHT))
-pygame.display.set_caption(f"Pathfinder v{version}")
+pygame.display.set_caption(f"Pathfinder v{pf.version}")
 pygame.display.set_icon(WIN)
 
 
@@ -36,20 +34,20 @@ def main():
     clock = pygame.time.Clock()
     graph = Grid(WIN)
     graph.draw_grid(WIN)
-    maze = Maze(pf.grid_x, pf.grid_y)
-    alg_name = 'astar'  # default alg
+    maze = Maze(pf.grid_size)
+    alg_name = pf.default_alg  # default alg
     # fill and update the display
     WIN.fill((175, 216, 248))
     redraw_window(WIN)
 
     def set_alg(alg_):
         """resets weights if alg is switched to unweighted"""
-        if alg_ not in pf.weighted:
+        if alg_ not in pf.settings.weighted:
             graph.clear_weights(WIN)
             for color in pf.SEARCH_COLORS:
                 graph.clear_searched(WIN, (color,))
             else:
-                graph.clear_searched(WIN, (pf.yellow,))
+                graph.clear_searched(WIN, (pf.YELLOW,))
         return alg_
 
     while True:
@@ -110,8 +108,11 @@ def main():
             graph.set_weight(WIN, node_indices, alg_name)
 
         # Wall
-        elif click[0]:
+        elif click[0] and node_indices not in graph.draggable:
             graph.set_wall(WIN, node_indices)
+
+        elif click[0] and node_indices in graph.draggable:
+            print('trying to drag')
 
         # Reset
         elif click[2]:
@@ -125,7 +126,7 @@ def main():
 
         # Basic weight maze
         elif keys[pygame.K_m] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            if alg_name in pf.weighted:
+            if alg_name in pf.settings.weighted:
                 maze.basic_weight_maze(WIN, graph)
                 redraw_window(WIN)
 
@@ -150,10 +151,10 @@ def main():
 
             if not graph.has_bomb:
                 node_list = [graph.start, graph.end]
-                search_colors = [pf.blue]
+                search_colors = [pf.BLUE]
             else:
                 node_list = [graph.start, graph.bomb, graph.end]
-                search_colors = [pf.dark_pink, pf.blue]
+                search_colors = [pf.DARK_PINK, pf.BLUE]
 
             alg = Algorithm(alg_name, node_list, pf.grid_offset,
                             graph.walls, graph.weights)

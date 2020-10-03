@@ -2,7 +2,7 @@
 from random import randrange
 
 from .algorithms import greedy
-from .constants import TARGET_COLORS, green, pink, red
+from .constants import GREEN, PINK, RED, TARGET_COLORS
 from .node import Grid
 
 
@@ -13,10 +13,10 @@ def _clear(win, graph: Grid):
 class Maze:
     """Constructs Mazes"""
 
-    def __init__(self, grid_x, grid_y):
-        self.grid_x = grid_x
-        self.grid_y = grid_y
-        self.node_colors = [red, green, pink]
+    def __init__(self, grid_size):
+        self.grid_x, self.grid_y = grid_size
+
+        self.node_colors = [RED, GREEN, PINK]
 
     def waypoint(self, graph, start, end):
         """:returns if there is a path between start and end"""

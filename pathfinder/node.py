@@ -2,8 +2,9 @@
 
 import pygame
 
-from .constants import HEIGHT, OFFSET, black, green, grid_x, grid_y, node_size, orange, pink, red, spaceship, \
-    weighted, white
+from . import settings
+from .constants import DARK_BLUE, GREEN, HEIGHT, OFFSET, ORANGE, PINK, RED, WHITE, grid_x, grid_y, node_size, spaceship, \
+    weight_density
 
 TARGET = spaceship
 
@@ -13,7 +14,7 @@ class Grid:
     cache = []
 
     def __init__(self, win):
-        self.grid = {(x, y): Node(win, white, x, y, node_size[0], node_size[1])
+        self.grid = {(x, y): Node(win, WHITE, x, y, node_size[0], node_size[1])
                      for y in range(grid_y) for x in range(grid_x)}
 
         self.has_start = self.has_end = True
@@ -68,7 +69,7 @@ class Grid:
     def set_weight(self, win, node, alg):
         """sets the state of the node to weight"""
 
-        if alg in weighted:
+        if alg in settings.weighted:
             self.clear_node(win, node)
             self.grid[node].make_weight()
             self.draw_node(win, node)
@@ -82,19 +83,19 @@ class Grid:
     def clear_weights(self, win):
         """resets all weights nodes"""
         for node in self.grid:
-            if self.grid[node].color == orange:
+            if self.grid[node].color == ORANGE:
                 self.grid[node].clear()
                 self.draw_node(win, node)
 
     def clear_node(self, win, node, draw=False):
         """resets the state of the node based on its current color"""
-        if self.grid[node].color == green:
+        if self.grid[node].color == GREEN:
             self.has_start = False
             self.start = (None, None)
-        elif self.grid[node].color == red:
+        elif self.grid[node].color == RED:
             self.has_end = False
             self.end = (None, None)
-        elif self.grid[node].color == pink:
+        elif self.grid[node].color == PINK:
             self.has_bomb = False
             self.bomb = (None, None)
         # Set color to white
@@ -112,7 +113,7 @@ class Grid:
         end = self.end
         bomb = self.bomb
         for node in self.grid:
-            if self.grid[node].color != white:
+            if self.grid[node].color != WHITE:
                 self.clear_node(win, node, True)
         if reset_targets:
             self.set_start(win, (int(grid_x * .25), grid_y // 2))
@@ -138,22 +139,24 @@ class Grid:
     def walls(self):
         """:returns list of all walls as a int tuple"""
         return [(self.grid[pos].get_pos())
-                for pos in self.grid if self.grid[pos].color == black]
+                for pos in self.grid if self.grid[pos].color == DARK_BLUE]
 
     @property
     def weights(self):
         """:returns list of all walls as a int tuple"""
-        return {(self.grid[pos].get_pos()): 10
-        if self.grid[pos].color == orange else 1 for pos in self.grid}
+        return {(self.grid[pos].get_pos()): weight_density
+        if self.grid[pos].color == ORANGE else 1 for pos in self.grid}
 
     @property
     def draggable(self):
         """:returns dict of draggable nodes"""
-        return {
+        dragging = {
             self.start: self.grid[self.start],
             self.end: self.grid[self.end],
-            self.bomb: self.grid[self.bomb]
         }
+        if self.has_bomb:
+            dragging[self.bomb] = self.grid[self.bomb]
+        return dragging
 
     def clear_searched(self, win, color):
         """
@@ -266,27 +269,27 @@ class Node:
 
     def make_wall(self):
         """sets a node to the wall color"""
-        self.color = black
+        self.color = DARK_BLUE
 
     def make_start(self):
         """sets a node to the start color"""
-        self.color = green
+        self.color = GREEN
 
     def make_end(self):
         """sets a node to the end color"""
-        self.color = red
+        self.color = RED
 
     def make_bomb(self):
         """sets a node to the bomb color"""
-        self.color = pink
+        self.color = PINK
 
     def make_weight(self):
         """sets a node to the weight color"""
-        self.color = orange
+        self.color = ORANGE
 
     def clear(self):
         """sets the node to its original color"""
-        self.color = white
+        self.color = WHITE
 
     def get_pos(self):
         """:returns tuple of the xy coordinate of the current node"""

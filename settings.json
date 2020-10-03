@@ -1,0 +1,24 @@
+{
+  "file": "settings.json",
+  "version": "2.9.2",
+  "weighted": [
+    "astar",
+    "dijkstra",
+    "greedy"
+  ],
+  "grid_size": {
+    "WIDTH": 50,
+    "HEIGHT": 25
+  },
+  "node_size": [
+    25,
+    25
+  ],
+  "default_alg": "astar",
+  "screen_size": {
+    "WIDTH": 1400,
+    "HEIGHT": 700
+  },
+  "search_speed": 0.0055,
+  "weight_density": 15
+}
