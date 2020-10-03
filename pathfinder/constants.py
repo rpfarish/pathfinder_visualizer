@@ -3,44 +3,40 @@ import os
 
 import pygame
 
-light_gray = (175, 175, 175)
-medium_gray = (140, 140, 140)
-dark_gray = (110, 110, 110)
-very_dark_gray = (50, 50, 50)
+from settings import Settings
 
-# Primary, black, white and other colors
-# white = (255, 255, 255)
-white = (230, 230, 230)
-pink = (252, 15, 192)
-dark_pink = (187, 0, 255)
-red = (255, 0, 0)
-dark_red = (215, 0, 0)
-orange = (255, 140, 0)
-yellow = (255, 254, 106)
-green = (0, 255, 0)
-blue = (64, 206, 227)
-# blue = (0, 190, 218)
-# blue = (175, 216, 248)
-light_blue = (66, 236, 245)
-black = (12, 53, 71)
-# black = (0, 0, 0)
+# load settings from settings.json
+settings = Settings('settings.json')
 
-grid_x, grid_y = 50, 25
-grid_offset = (grid_x - 1, grid_y - 1)
-WIDTH, HEIGHT = 1400, 700
+# Version
+version = settings.version
+
+# Colors
+WHITE = (230, 230, 230)
+PINK = (252, 15, 192)
+DARK_PINK = (187, 0, 255)
+RED = (255, 0, 0)
+ORANGE = (255, 140, 0)
+YELLOW = (255, 254, 106)
+GREEN = (0, 255, 0)
+BLUE = (64, 206, 227)
+DARK_BLUE = (15, 66, 88)
+
 OFFSET = 3
-ZERO = (0, 0)
+
+WIDTH, HEIGHT = settings.screen_size["WIDTH"], settings.screen_size["HEIGHT"]
+grid_x, grid_y = settings.grid_size["WIDTH"], settings.grid_size["HEIGHT"]
+grid_size = grid_x, grid_y
+grid_offset = (grid_x - 1, grid_y - 1)
+
+weight_density = settings.weight_density
+default_alg = settings.default_alg
 XGR = (grid_x - 1, 0)
 YGR = (0, grid_y - 1)
-weighted = ('astar', 'dijkstra', 'greedy')
-node_size = (25, 25)
+
+node_size = settings.node_size
 spaceship = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), node_size)
-search_speed = 0.0055
-TOP_LEFT_X = HEIGHT // grid_y * 0 + OFFSET
-TOP_LEFT_Y = HEIGHT // grid_y * 0 + OFFSET
-SEARCH_COLORS = (dark_pink, blue, yellow)
-TARGET_COLORS = [red, green, pink]
-THE_GRID = {}
-for x in range(grid_x):
-    for y in range(grid_y):
-        THE_GRID[(x, y)] = float("inf")
+
+SEARCH_COLORS = (DARK_PINK, BLUE, YELLOW)
+TARGET_COLORS = [RED, GREEN, PINK]
+THE_GRID = {(x, y): float("inf") for y in range(grid_y) for x in range(grid_x)}
