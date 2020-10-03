@@ -4,7 +4,8 @@ from math import log
 
 import pygame
 
-from pathfinder.constants import green, orange, pink, red, weighted, yellow
+from pathfinder import settings
+from pathfinder.constants import GREEN, ORANGE, PINK, RED, YELLOW
 from pathfinder.node import Grid
 
 used_keys = [pygame.K_p, pygame.K_SPACE]
@@ -40,9 +41,9 @@ class Visualize:
     def __init__(self, nodes: Grid, start, end, end_color, alg, win, color,
                  search_speed, level, parent, searched):
         Visualize.objs.append(self)
-        self.targets = [red, green, pink]
-        if alg in weighted:
-            self.targets.append(orange)
+        self.targets = [RED, GREEN, PINK]
+        if alg in settings.weighted:
+            self.targets.append(ORANGE)
         self.speed = search_speed
         self._speed = search_speed
         self.nodes = nodes
@@ -147,10 +148,10 @@ class Visualize:
                     return
 
                 if self.nodes.grid[node].color not in self.targets:
-                    self.nodes.grid[node].color = yellow
+                    self.nodes.grid[node].color = YELLOW
                     self._draw_path_node(node)
 
-                elif self.nodes.grid[node].color == orange:
+                elif self.nodes.grid[node].color == ORANGE:
                     self._draw_path_node(node)
 
             else:
@@ -170,7 +171,7 @@ class Visualize:
 
             elif self.nodes.grid[node].color not in self.targets:
 
-                self.nodes.grid[node].color = yellow
+                self.nodes.grid[node].color = YELLOW
 
                 self._update(node, clear=True)
                 time.sleep(self.search_speed * log(i, 8))
