@@ -57,7 +57,7 @@ class Visualize:
         self.area_color = color
         self.searched_nodes = searched
         self.tail = None
-        nodes.visualized = True
+
 
     def __len__(self):
         return len(self._get_path())
@@ -131,6 +131,21 @@ class Visualize:
 
         return path
 
+    def _get_path_dict(self):
+        if self.end not in self.parent:
+            return {}
+        end_parent = self.parent[self.end]
+        path = {end_parent: YELLOW}
+
+        while True:
+            end_parent = self.parent[end_parent]
+            if end_parent is None:
+                break
+            else:
+                path[end_parent] = YELLOW
+
+        return path
+
     def _draw_path_node(self, node):
         self.nodes.grid[node].is_target = True
         self._update(node, clear=True)
@@ -138,6 +153,21 @@ class Visualize:
         # time.sleep(1)
         time.sleep(0.07)
         self._render(node)
+
+    def draw_both(self):
+        area = {}
+        for node in self.searched_nodes:
+            if self.nodes.grid[node].color == self.end_color:
+                break
+            area[node] = self.area_color
+
+        path = self._get_path_dict()
+        both = {**area, **path}
+
+        for node, color in both.items():
+            if self.nodes.grid[node].color not in self.targets:
+                self.nodes.grid[node].color = color
+                self._render(node)
 
     def draw_path(self):
         """visualizes the path"""

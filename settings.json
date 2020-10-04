@@ -1,6 +1,6 @@
 {
   "file": "settings.json",
-  "version": "2.9.2",
+  "version": "3.0.0",
   "weighted": [
     "astar",
     "dijkstra",
@@ -14,7 +14,7 @@
     25,
     25
   ],
-  "default_alg": "dijkstra",
+  "default_alg": "astar",
   "screen_size": {
     "WIDTH": 1400,
     "HEIGHT": 700

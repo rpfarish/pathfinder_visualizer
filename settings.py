@@ -21,7 +21,7 @@ default = {
         "WIDTH": 50,
         "HEIGHT": 25
     },
-    "version": "2.9.2"
+    "version": "3.0.0"
 }
 
 

@@ -36,9 +36,24 @@ def main():
     graph.draw_grid(WIN)
     maze = Maze(pf.GRID_SIZE)
     alg_name = pf.settings.default_alg  # default alg
+    curr_node_temp = None
+    dragging = False
+    visualized = False
     # fill and update the display
     WIN.fill((175, 216, 248))
     redraw_window(WIN)
+
+    def run_search(win, graph_, auto=False):
+        if not graph_.has_bomb:
+            node_list = [graph_.start, graph_.end]
+            search_colors = [pf.BLUE]
+        else:
+            node_list = [graph_.start, graph_.bomb, graph_.end]
+            search_colors = [pf.DARK_PINK, pf.BLUE]
+
+        alg = Algorithm(pf.settings.default_alg, node_list, pf.GRID_OFFSET,
+                        graph_.walls, graph_.weights)
+        alg(win, graph_, search_colors, auto)
 
     def set_alg(alg_):
         """resets weights if alg is switched to unweighted"""
@@ -64,7 +79,23 @@ def main():
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         keys = pygame.key.get_pressed()
-        node_indices = get_node_pos(graph, mouse)
+        curr_node = get_node_pos(graph, mouse)
+
+        if curr_node in graph.draggable:
+            if click[0]:
+                dragging = True
+                curr_node_temp = curr_node
+
+        if dragging:
+            if not click[0]:
+                dragging = False
+            if curr_node_temp != curr_node:
+                graph.set_drag_state(WIN, curr_node_temp, curr_node)
+                curr_node_temp = curr_node
+                if visualized:
+                    run_search(WIN, graph, auto=True)
+
+            continue
 
         # - Set alg names -
 
@@ -92,34 +123,32 @@ def main():
 
         # Start
         elif keys[pygame.K_s] and click[0]:
-            graph.set_start(WIN, node_indices)
+            graph.set_start(WIN, curr_node)
 
         # End
         elif keys[pygame.K_e] and click[0]:
-            graph.set_end(WIN, node_indices)
+            graph.set_end(WIN, curr_node)
 
         # Bomb
         elif keys[pygame.K_b] and click[0]:
-            graph.set_bomb(WIN, node_indices)
+            graph.set_bomb(WIN, curr_node)
             # todo make bomb a png
 
         # Weight
         elif keys[pygame.K_w] and click[0]:
-            graph.set_weight(WIN, node_indices, pf.settings.default_alg)
+            graph.set_weight(WIN, curr_node, pf.settings.default_alg)
 
         # Wall
-        elif click[0] and node_indices not in graph.draggable:
-            graph.set_wall(WIN, node_indices)
-
-        elif click[0] and node_indices in graph.draggable:
-            print('trying to drag')
+        elif click[0]:
+            graph.set_wall(WIN, curr_node)
 
         # Reset
-        elif click[2]:
-            graph.clear_node(WIN, node_indices, True)
+        elif click[2] and curr_node not in (graph.end, graph.start):
+            graph.clear_node(WIN, curr_node, True)
 
         # Reset All Node
         elif keys[pygame.K_c]:
+            visualized = False
             graph.clear(WIN)
 
         # - Mazes -
@@ -127,11 +156,13 @@ def main():
         # Basic weight maze
         elif keys[pygame.K_m] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             if pf.settings.default_alg in pf.settings.weighted:
+                visualized = False
                 maze.basic_weight_maze(WIN, graph)
                 redraw_window(WIN)
 
         # Basic random maze
         elif keys[pygame.K_m]:
+            visualized = False
             maze.basic_random_maze(WIN, graph)
             redraw_window(WIN)
 
@@ -142,24 +173,10 @@ def main():
 
         # Start Visualization
         if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
-
-            if graph.start == (None, None) or graph.end == (None, None):
-                print('Invalid start or end nodes')
-                continue
-
             print('Visualization started with:', pf.settings.default_alg.title())
-
-            if not graph.has_bomb:
-                node_list = [graph.start, graph.end]
-                search_colors = [pf.BLUE]
-            else:
-                node_list = [graph.start, graph.bomb, graph.end]
-                search_colors = [pf.DARK_PINK, pf.BLUE]
-
-            alg = Algorithm(pf.settings.default_alg, node_list, pf.GRID_OFFSET,
-                            graph.walls, graph.weights)
-            alg(WIN, graph, search_colors)
-
+            # Start Search
+            run_search(WIN, graph)
+            visualized = True
             print('Visualization done')
 
 

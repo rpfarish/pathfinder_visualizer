@@ -59,10 +59,12 @@ class Algorithm:
     def _call_weighted(self):
         return self.weighted_funcs[self.alg](*self._unweighted_params, self.weights)
 
-    def __call__(self, win, graph: Grid, area_color):
+    def __call__(self, win, graph: Grid, area_color, auto=False):
         """searches and then visualizes the area and path"""
         self.clear_colors = SEARCH_COLORS
-        self._clear(win, graph)
+
+        self._clear(win, graph, update=not auto)
+
         for i in range(len(self.node_list) - 1):
             # do the search with the alg and get the result
             node_score, parent, visited = self._get_search_data()
@@ -73,24 +75,28 @@ class Algorithm:
 
             self.node_count += 1
         else:
-            # visualize area
-            for vis in Visualize.objs:
-                end_found = vis.draw_search_area()
-                if not end_found:
-                    Visualize.objs.clear()
-                    return
+            if auto:
+                for vis in Visualize.objs:
+                    vis.draw_both()
+            else:
+                # visualize area
+                for vis in Visualize.objs:
+                    end_found = vis.draw_search_area()
+                    if not end_found:
+                        Visualize.objs.clear()
+                        return
 
-            # draw path
-            for vis in Visualize.objs:
-                vis.draw_path()
-                print(len(vis))
+                # draw path
+                for vis in Visualize.objs:
+                    vis.draw_path()
+                    # print(len(vis))
 
             self.node_count = 0
             Visualize.objs.clear()
 
-    def _clear(self, win, graph):
+    def _clear(self, win, graph, update=True):
         """calls to class Grid to clear """
         for color in self.clear_colors:
-            graph.clear_searched(win, (color,))
+            graph.clear_searched(win, (color,), update)
         else:
-            graph.clear_searched(win, (YELLOW,))
+            graph.clear_searched(win, (YELLOW,), update)
