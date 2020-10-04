@@ -27,9 +27,6 @@ class Grid:
         self.grid[self.end].make_end()
 
         self.bomb = (None, None)
-        # todo visualized does nothing
-        self.visualized = False
-        self.weight = 10
 
     def draw_grid(self, win):
         """draws all nodes"""
@@ -38,7 +35,7 @@ class Grid:
 
     def set_start(self, win, node):
         """sets the state of the node to start"""
-        if not self.has_start and node != self.end and node != self.bomb:
+        if node != self.end and node != self.bomb:
             self.has_start = True
             self.start = node
             self.grid[node].make_start()
@@ -46,7 +43,7 @@ class Grid:
 
     def set_end(self, win, node):
         """sets the state of the node to end"""
-        if not self.has_end and node != self.start and node != self.bomb:
+        if node != self.start and node != self.bomb:
             self.has_end = True
             self.end = node
             self.grid[node].make_end()
@@ -54,7 +51,7 @@ class Grid:
 
     def set_bomb(self, win, node):
         """sets the state of the node to bomb"""
-        if not self.has_bomb and node != self.start and node != self.end:
+        if node != self.start and node != self.end:
             self.has_bomb = True
             self.bomb = node
             self.grid[node].make_bomb()
@@ -138,13 +135,12 @@ class Grid:
     @property
     def walls(self):
         """:returns list of all walls as a int tuple"""
-        return [(self.grid[pos].get_pos())
-                for pos in self.grid if self.grid[pos].color == DARK_BLUE]
+        return [pos for pos in self.grid if self.grid[pos].color == DARK_BLUE]
 
     @property
     def weights(self):
         """:returns list of all walls as a int tuple"""
-        return {(self.grid[pos].get_pos()): weight_density
+        return {pos: weight_density
         if self.grid[pos].color == ORANGE else 1 for pos in self.grid}
 
     @property
@@ -158,7 +154,7 @@ class Grid:
             dragging[self.bomb] = self.grid[self.bomb]
         return dragging
 
-    def clear_searched(self, win, color):
+    def clear_searched(self, win, color, update=True):
         """
         resets all nodes that are in color
         :param win: pygame surface
@@ -168,8 +164,27 @@ class Grid:
             if node.color in color:
                 node.clear()
                 node.draw(win)
-        else:
+        if update:
             pygame.display.update()
+
+    def set_drag_state(self, win, temp, curr):
+        """
+        Sets the state of the nodes when it is
+        being dragged and dragged over
+        """
+        if temp == curr:
+            return
+        self.grid[curr].set_prev_state()
+
+        if self.grid[temp].color == GREEN:
+            self.set_start(win, curr)
+        elif self.grid[temp].color == RED:
+            self.set_end(win, curr)
+        elif self.grid[temp].color == PINK:
+            self.set_bomb(win, curr)
+
+        self.grid[temp].prev_state()
+        self.grid[temp].draw(win)
 
 
 class Node:
@@ -193,8 +208,8 @@ class Node:
         self.rect_obj = pygame.draw.rect(
             win, self.color, (self.x, self.y, self.width, self.height)
         )
-        self.dragging = False
         self.is_target = False
+        self.prev_state = self.clear
 
     def __eq__(self, other):
         if not isinstance(self, type(self)) or type(self) is not type(other):
@@ -205,7 +220,7 @@ class Node:
 
         if self.x == other.x and self.y == other.y and self.width == other.width and self.height == other.height \
                 and self.color == other.color and self.x_coord == other.y_coord and self.x_coord == other.y_coord \
-                and self.dragging == other.dragging and self.is_target == other.is_target:
+                and self.is_target == other.is_target:
             return True
         else:
             return False
@@ -258,15 +273,6 @@ class Node:
     #     self.x -= temp[0]
     #     self.y -= temp[1]
 
-    def hover(self, mouse) -> bool:
-        """:return True if mouse is inside the rectangle else False"""
-        x_pos, y_pos = mouse
-        if self.x - OFFSET < x_pos < self.x + self.width + OFFSET and \
-                self.y - OFFSET < y_pos < self.y + self.height + OFFSET:
-            return True
-        else:
-            return False
-
     def make_wall(self):
         """sets a node to the wall color"""
         self.color = DARK_BLUE
@@ -294,3 +300,15 @@ class Node:
     def get_pos(self):
         """:returns tuple of the xy coordinate of the current node"""
         return self.x_coord, self.y_coord
+
+    def set_prev_state(self):
+        """
+        Sets the previous state of the node
+        by color to a first-class function
+        """
+        if self.color == DARK_BLUE:
+            self.prev_state = self.make_wall
+        elif self.color == ORANGE:
+            self.prev_state = self.make_weight
+        elif self.color == WHITE:
+            self.prev_state = self.clear
