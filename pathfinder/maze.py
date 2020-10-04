@@ -38,9 +38,9 @@ class Maze:
         _clear(win, graph)
         for x in range(self.grid_x):
             for y in range(self.grid_y):
-                if graph.grid[(x, y)].color not in TARGET_COLORS:
+                if graph[(x, y)].color not in TARGET_COLORS:
                     if randrange(0, 100) < 30:
-                        graph.grid[(x, y)].make_wall()
+                        graph[(x, y)].make_wall()
         else:
             if self.has_solution(graph):
                 graph.draw_grid(win)
@@ -52,8 +52,8 @@ class Maze:
         _clear(win, graph)
         for x in range(self.grid_x):
             for y in range(self.grid_y):
-                if graph.grid[(x, y)].color not in TARGET_COLORS:
+                if graph[(x, y)].color not in TARGET_COLORS:
                     if randrange(0, 100) < 30:
-                        graph.grid[(x, y)].make_weight()
+                        graph[(x, y)].make_weight()
         else:
             graph.draw_grid(win)

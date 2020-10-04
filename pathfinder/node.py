@@ -23,14 +23,35 @@ class Grid:
         # set start and end to the first and third quartiles
         self.start = (int(GRID_X * .25), GRID_Y // 2)
         self.end = (int(GRID_X * .75), GRID_Y // 2)
-        self.grid[self.start].make_start()
-        self.grid[self.end].make_end()
+        self[self.start].make_start()
+        self[self.end].make_end()
 
         self.bomb = (None, None)
 
+    def __getitem__(self, key):
+        return self.grid[key]
+
+    def __setitem__(self, key, value):
+        self.grid[key] = value
+
+    def __iter__(self):
+        return iter(self.grid)
+
+    def values(self):
+        """:returns iterator of grid values"""
+        return iter(self.grid.values())
+
+    def items(self):
+        """:returns iterator of grid items"""
+        return iter(self.grid.items())
+
+    def keys(self):
+        """:returns iterator of grid keys"""
+        return iter(self.grid.keys())
+
     def draw_grid(self, win):
         """draws all nodes"""
-        for node in self.grid.values():
+        for node in self.values():
             node.draw(win)
 
     def set_start(self, win, node):
@@ -38,7 +59,7 @@ class Grid:
         if node != self.end and node != self.bomb:
             self.has_start = True
             self.start = node
-            self.grid[node].make_start()
+            self[node].make_start()
             self.draw_node(win, node)
 
     def set_end(self, win, node):
@@ -46,7 +67,7 @@ class Grid:
         if node != self.start and node != self.bomb:
             self.has_end = True
             self.end = node
-            self.grid[node].make_end()
+            self[node].make_end()
             self.draw_node(win, node)
 
     def set_bomb(self, win, node):
@@ -54,13 +75,13 @@ class Grid:
         if node != self.start and node != self.end:
             self.has_bomb = True
             self.bomb = node
-            self.grid[node].make_bomb()
+            self[node].make_bomb()
             self.draw_node(win, node)
 
     def set_wall(self, win, node):
         """sets the state of the node to wall"""
         self.clear_node(win, node)
-        self.grid[node].make_wall()
+        self[node].make_wall()
         self.draw_node(win, node)
 
     def set_weight(self, win, node, alg):
@@ -68,35 +89,35 @@ class Grid:
 
         if alg in settings.weighted:
             self.clear_node(win, node)
-            self.grid[node].make_weight()
+            self[node].make_weight()
             self.draw_node(win, node)
 
     def clear_walls(self, win):
         """resets all wall nodes"""
         for node in self.walls:
-            self.grid[node].clear()
+            self[node].clear()
             self.draw_node(win, node)
 
     def clear_weights(self, win):
         """resets all weights nodes"""
-        for node in self.grid:
-            if self.grid[node].color == ORANGE:
-                self.grid[node].clear()
+        for node in self:
+            if self[node].color == ORANGE:
+                self[node].clear()
                 self.draw_node(win, node)
 
     def clear_node(self, win, node, draw=False):
         """resets the state of the node based on its current color"""
-        if self.grid[node].color == GREEN:
+        if self[node].color == GREEN:
             self.has_start = False
             self.start = (None, None)
-        elif self.grid[node].color == RED:
+        elif self[node].color == RED:
             self.has_end = False
             self.end = (None, None)
-        elif self.grid[node].color == PINK:
+        elif self[node].color == PINK:
             self.has_bomb = False
             self.bomb = (None, None)
         # Set color to white
-        self.grid[node].clear()
+        self[node].clear()
 
         if draw:
             self.draw_node(win, node)
@@ -109,8 +130,8 @@ class Grid:
         start = self.start
         end = self.end
         bomb = self.bomb
-        for node in self.grid:
-            if self.grid[node].color != WHITE:
+        for node in self:
+            if self[node].color != WHITE:
                 self.clear_node(win, node, True)
         if reset_targets:
             self.set_start(win, (int(GRID_X * .25), GRID_Y // 2))
@@ -123,68 +144,70 @@ class Grid:
             if bomb != (None, None):
                 self.set_bomb(win, bomb)
 
-    def draw_node(self, win, node):
-        """draws the node then caches its rect object to draw later"""
-        self.grid[node].draw(win)
-        Grid.cache.append(self.grid[node].rect_obj)
-
-    def draw(self, win, node):
-        """draws the node"""
-        self.grid[node].draw(win)
-
-    @property
-    def walls(self):
-        """:returns list of all walls as a int tuple"""
-        return [pos for pos in self.grid if self.grid[pos].color == DARK_BLUE]
-
-    @property
-    def weights(self):
-        """:returns list of all walls as a int tuple"""
-        return {pos: weight_density
-        if self.grid[pos].color == ORANGE else 1 for pos in self.grid}
-
-    @property
-    def draggable(self):
-        """:returns dict of draggable nodes"""
-        dragging = {
-            self.start: self.grid[self.start],
-            self.end: self.grid[self.end],
-        }
-        if self.has_bomb:
-            dragging[self.bomb] = self.grid[self.bomb]
-        return dragging
-
     def clear_searched(self, win, color, update=True):
         """
         resets all nodes that are in color
+        :param update: if update, the whole display updates
         :param win: pygame surface
         :param color: tuple of colors
         """
-        for node in self.grid.values():
+        for node in self.values():
             if node.color in color:
                 node.clear()
                 node.draw(win)
         if update:
             pygame.display.update()
 
-    def set_drag_state(self, win, temp, curr):
+    def draw_node(self, win, node):
+        """draws the node then caches its rect object to draw later"""
+        self[node].draw(win)
+        Grid.cache.append(self[node].rect_obj)
+
+    def draw(self, win, node):
+        """draws the node"""
+        pass
+        print('pure draw was run')
+
+    @property
+    def walls(self):
+        """:returns list of all walls as a int tuple"""
+        return [pos for pos in self if self[pos].color == DARK_BLUE]
+
+    @property
+    def weights(self):
+        """:returns dict of all weights as a int tuple: int map"""
+        return {pos: weight_density if self[pos].color == ORANGE else 1
+                for pos in self}
+
+    @property
+    def draggable(self):
+        """:returns dict of draggable nodes"""
+        dragging = {
+            self.start: self[self.start],
+            self.end: self[self.end],
+        }
+        if self.has_bomb:
+            dragging[self.bomb] = self[self.bomb]
+        return dragging
+
+    def set_drag_state(self, win, last, curr):
         """
         Sets the state of the nodes when it is
         being dragged and dragged over
         """
-        if temp == curr:
+        if last == curr:
             return
-        self.grid[curr].set_prev_state()
+        self[curr].set_prev_state()
 
-        if self.grid[temp].color == GREEN:
+        if self[last].color == GREEN:
             self.set_start(win, curr)
-        elif self.grid[temp].color == RED:
+        elif self[last].color == RED:
             self.set_end(win, curr)
-        elif self.grid[temp].color == PINK:
+        elif self[last].color == PINK:
             self.set_bomb(win, curr)
 
-        self.grid[temp].prev_state()
-        self.grid[temp].draw(win)
+        self[last].prev_state()
+        self[last].draw(win)
 
 
 class Node:
@@ -296,10 +319,6 @@ class Node:
     def clear(self):
         """sets the node to its original color"""
         self.color = WHITE
-
-    def get_pos(self):
-        """:returns tuple of the xy coordinate of the current node"""
-        return self.x_coord, self.y_coord
 
     def set_prev_state(self):
         """

@@ -30,7 +30,7 @@ def keylock(index, keys):
 class Visualize:
     """
     visualizer class
-    nodes is an object of Grid
+    grid is an object of Grid
     """
 
     keyslock = [0 for _ in range(512)]
@@ -38,7 +38,7 @@ class Visualize:
     cache = []
     objs = []
 
-    def __init__(self, nodes: Grid, start, end, end_color, alg, win, color,
+    def __init__(self, grid: Grid, start, end, end_color, alg, win, color,
                  search_speed, level, parent, searched):
         Visualize.objs.append(self)
         self.targets = [RED, GREEN, PINK]
@@ -46,7 +46,7 @@ class Visualize:
             self.targets.append(ORANGE)
         self.speed = search_speed
         self._speed = search_speed
-        self.nodes = nodes
+        self.grid = grid
         self.win = win
         self.alg = alg
         self.start = start
@@ -56,14 +56,33 @@ class Visualize:
         self.parent = parent
         self.area_color = color
         self.searched_nodes = searched
-        self.tail = None
 
+    def __getitem__(self, key):
+        return self.grid[key]
+
+    def __setitem__(self, key, value):
+        self.grid[key] = value
+
+    def __iter__(self):
+        return iter(self.grid)
+
+    def values(self):
+        """:returns iterator of grid values"""
+        return iter(self.grid.values())
+
+    def items(self):
+        """:returns iterator of grid items"""
+        return iter(self.grid.items())
+
+    def keys(self):
+        """:returns iterator of grid keys"""
+        return iter(self.grid.keys())
 
     def __len__(self):
         return len(self._get_path())
 
     def __repr__(self):
-        return f"""{self.__class__.__name__}({self.nodes}, {self.start}, {self.end},
+        return f"""{self.__class__.__name__}({self.grid}, {self.start}, {self.end},
                     {self.end_color}, {self.alg}, {self.win}, {self.area_color},
                     {self._speed}, {self.level}, {self.parent}, {self.searched_nodes})"""
 
@@ -108,8 +127,8 @@ class Visualize:
 
     def _render(self, node: Grid):
         """draws and then caches a node"""
-        self.nodes.grid[node].draw(self.win)
-        self.cache.append(self.nodes.grid[node].rect_obj)
+        self[node].draw(self.win)
+        self.cache.append(self[node].rect_obj)
 
     def _update(self, node, clear=False):
         """renders and then updates the display"""
@@ -147,9 +166,9 @@ class Visualize:
         return path
 
     def _draw_path_node(self, node):
-        self.nodes.grid[node].is_target = True
+        self[node].is_target = True
         self._update(node, clear=True)
-        self.nodes.grid[node].is_target = False
+        self[node].is_target = False
         # time.sleep(1)
         time.sleep(0.07)
         self._render(node)
@@ -157,16 +176,17 @@ class Visualize:
     def draw_both(self):
         area = {}
         for node in self.searched_nodes:
-            if self.nodes.grid[node].color == self.end_color:
+            if self[node].color == self.end_color:
                 break
-            area[node] = self.area_color
+            if self[node].color != YELLOW:
+                area[node] = self.area_color
 
         path = self._get_path_dict()
         both = {**area, **path}
 
         for node, color in both.items():
-            if self.nodes.grid[node].color not in self.targets:
-                self.nodes.grid[node].color = color
+            if self[node].color not in self.targets:
+                self[node].color = color
                 self._render(node)
 
     def draw_path(self):
@@ -177,11 +197,11 @@ class Visualize:
                 if self.pygame_quit():
                     return
 
-                if self.nodes.grid[node].color not in self.targets:
-                    self.nodes.grid[node].color = YELLOW
+                if self[node].color not in self.targets:
+                    self[node].color = YELLOW
                     self._draw_path_node(node)
 
-                elif self.nodes.grid[node].color == ORANGE:
+                elif self[node].color == ORANGE:
                     self._draw_path_node(node)
 
             else:
@@ -195,17 +215,17 @@ class Visualize:
                 return None
 
             # stop visualization if end was found
-            if self.nodes.grid[node].color == self.end_color:
+            if self[node].color == self.end_color:
                 self._update(node, clear=True)
                 return True
 
-            elif self.nodes.grid[node].color not in self.targets:
+            elif self[node].color not in self.targets:
 
-                self.nodes.grid[node].color = YELLOW
+                self[node].color = YELLOW
 
                 self._update(node, clear=True)
                 time.sleep(self.search_speed * log(i, 8))
-                self.nodes.grid[node].color = self.area_color
+                self[node].color = self.area_color
                 self._render(node)
 
         else:

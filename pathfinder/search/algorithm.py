@@ -13,8 +13,8 @@ class Algorithm:
     Main API to access the pathfinder alg
     :param alg: algorithm to use to search with
     :param node_list: order of nodes to visit 
-    :param walls: walls or obstructions in the grid
     :param grid_size: an int tuple of the size of the grid
+    :param walls: walls or obstructions in the grid
     :param weights: weighed nodes in the grid
     """
     unweighted_funcs = {'bfs': bfs, 'dfs': dfs}
@@ -28,8 +28,6 @@ class Algorithm:
         self.weights = weights
         self.node_count = 0
         self.clear_colors = []
-        self.area = []
-        self.vis_objs = []
 
     @property
     def _start(self):
@@ -70,7 +68,7 @@ class Algorithm:
             node_score, parent, visited = self._get_search_data()
 
             # cache visualizable object
-            Visualize(graph, self._start, self._end, graph.grid[self._end].color,
+            Visualize(graph, self._start, self._end, graph[self._end].color,
                       self.alg, win, area_color[i], settings.search_speed, node_score, parent, visited)
 
             self.node_count += 1
@@ -96,6 +94,7 @@ class Algorithm:
 
     def _clear(self, win, graph, update=True):
         """calls to class Grid to clear """
+
         for color in self.clear_colors:
             graph.clear_searched(win, (color,), update)
         else:
