@@ -1,9 +1,11 @@
 from queue import PriorityQueue
 
 from pathfinder.constants import THE_GRID
+from pathfinder.utils import cache
 from .adjacent_nodes import adjacent_nodes
 
 
+@cache
 def dijkstra(start, end, wall, grid_size, weight_li):
     """
     The famous Dijkstra's Algorithm invented by Edsger Dijkstra and

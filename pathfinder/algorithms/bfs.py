@@ -1,7 +1,9 @@
 """The Breadth-First Search Algorithm"""
 from .adjacent_nodes import adjacent_nodes
+from ..utils import cache
 
 
+@cache
 def bfs(start, end, wall, grid_size):
     """
     Define a nodes location as a tuple e.g. (3,4) and (2,4),

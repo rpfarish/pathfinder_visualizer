@@ -1,7 +1,9 @@
 """Depth-First Search"""
+from pathfinder.utils import cache
 from .adjacent_nodes import adjacent_nodes
 
 
+@cache
 def dfs(start, end, wall, grid_size):
     """Depth-First Search"""
     stack = [start]

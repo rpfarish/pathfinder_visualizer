@@ -33,6 +33,29 @@ def timer(fn):
     return func
 
 
+def cache(fn):
+    """decorator to cache inputs to functions"""
+    _cache = []
+    _results = []
+
+    @functools.wraps(fn)
+    def func(*args):
+        """cache stuff"""
+        if len(_cache) > 1000:
+            _cache.clear()
+            _results.clear()
+        if args not in _cache:
+            result = fn(*args)
+            _cache.append(args)
+            _results.append(result)
+        else:
+            return _results[_cache.index(args)]
+
+        return result
+
+    return func
+
+
 def constrain(val, min_val, max_val) -> int:
     """keeps val in the range of min_val and max_val"""
     return min(max_val, max(min_val, val))

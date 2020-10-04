@@ -2,8 +2,10 @@
 from queue import PriorityQueue
 
 from .adjacent_nodes import adjacent_nodes
+from ..utils import cache
 
 
+@cache
 def h(p1, p2):
     """
     manhattan distance
@@ -15,6 +17,7 @@ def h(p1, p2):
     return abs(x1 - x2) + abs(y1 - y2)
 
 
+@cache
 def greedy(start, end, wall, grid_size, weight_li):
     """the Greedy Best-first Search"""
     open_set = PriorityQueue()
