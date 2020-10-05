@@ -89,7 +89,8 @@ class Visualize:
     @staticmethod
     def pygame_quit():
         """
-        Allows the user to exit
+        Allows the user to exit,
+        allow pausing of the visualization
         and keeps the window from freezing
         silences the pygame display not init error
         """
