@@ -4,4 +4,4 @@
 #
 #    pip-compile
 #
-pygame~=2.0.0.dev8
+pygame==2.0.0.dev8
