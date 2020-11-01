@@ -121,14 +121,6 @@ def main():
 
         # - Set node state -
 
-        # Start
-        elif keys[pygame.K_s] and click[0]:
-            graph.set_start(WIN, curr_node)
-
-        # End
-        elif keys[pygame.K_e] and click[0]:
-            graph.set_end(WIN, curr_node)
-
         # Bomb
         elif keys[pygame.K_b] and click[0]:
             graph.set_bomb(WIN, curr_node)
