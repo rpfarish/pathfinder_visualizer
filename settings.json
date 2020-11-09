@@ -1,10 +1,14 @@
 {
   "file": "settings.json",
-  "version": "3.0.1",
+  "version": "3.0.4",
   "weighted": [
     "astar",
     "dijkstra",
     "greedy"
+  ],
+  "unweighted": [
+    "bfs",
+    "dfs"
   ],
   "grid_size": {
     "WIDTH": 50,
@@ -14,7 +18,7 @@
     25,
     25
   ],
-  "default_alg": "astar",
+  "default_alg": "dijkstra",
   "screen_size": {
     "WIDTH": 1400,
     "HEIGHT": 700

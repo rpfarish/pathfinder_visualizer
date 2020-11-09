@@ -27,7 +27,6 @@ class Algorithm:
         self.walls = walls
         self.weights = weights
         self.node_count = 0
-        self.clear_colors = []
 
     @property
     def _start(self):
@@ -58,8 +57,10 @@ class Algorithm:
         return self.weighted_funcs[self.alg](*self._unweighted_params, self.weights)
 
     def __call__(self, win, graph: Grid, area_color, auto=False):
-        """searches and then visualizes the area and path"""
-        self.clear_colors = SEARCH_COLORS
+        """
+        searches and then visualizes the graph structure
+        in order of the nodes in node_list then draws the path
+        """
 
         self._clear(win, graph, update=not auto)
 
@@ -72,30 +73,29 @@ class Algorithm:
                       self.alg, win, area_color[i], settings.search_speed, node_score, parent, visited)
 
             self.node_count += 1
-        else:
-            if auto:
-                for vis in Visualize.objs:
-                    vis.draw_both()
-            else:
-                # visualize area
-                for vis in Visualize.objs:
-                    end_found = vis.draw_search_area()
-                    if not end_found:
-                        Visualize.objs.clear()
-                        return
 
-                # draw path
+        if auto:
+            for vis in Visualize.objs:
+                vis.draw_both()
+        else:
+            # draw each graph search
+            for vis in Visualize.objs:
+                end_found = vis.draw_search_area()
+                if not end_found:
+                    break
+            else:
+                # draw each path
                 for vis in Visualize.objs:
                     vis.draw_path()
                     # print(len(vis))
 
-            self.node_count = 0
-            Visualize.objs.clear()
+        self.node_count = 0
+        Visualize.objs.clear()
 
     def _clear(self, win, graph, update=True):
         """calls to class Grid to clear """
 
-        for color in self.clear_colors:
+        for color in SEARCH_COLORS:
             graph.clear_searched(win, (color,), update)
         else:
             graph.clear_searched(win, (YELLOW,), update)

@@ -6,11 +6,11 @@ from . import settings
 from .constants import DARK_BLUE, GREEN, GRID_X, GRID_Y, HEIGHT, OFFSET, ORANGE, PINK, RED, SPACESHIP, WHITE, node_size, \
     weight_density
 
-TARGET = SPACESHIP
-
 
 class Grid:
-    """Creates arrays of node objects"""
+    """Creates arrays of node objects and allows accessing them
+    through a dict graph structure with coordinates as keys.
+    Accessing the graph structure or grid can be done through using self as the dict object itself"""
     cache = []
 
     def __init__(self, win):
@@ -163,11 +163,6 @@ class Grid:
         self[node].draw(win)
         Grid.cache.append(self[node].rect_obj)
 
-    def draw(self, win, node):
-        """draws the node"""
-        pass
-        print('pure draw was run')
-
     @property
     def walls(self):
         """:returns list of all walls as a int tuple"""
@@ -273,28 +268,7 @@ class Node:
             Grid.cache.append(self.rect_obj)
 
         if self.is_target:
-            win.blit(TARGET, (self.x, self.y))
-
-    # def update_obj(self, win):
-    #     self.rect_obj = pygame.draw.rect(
-    #         win, self.color, (self.x, self.y, self.width, self.height)
-    #     )
-
-    #
-    # def resize(self, win, size):
-    #     temp = self.rect_obj.center
-    #     self.width += size[0]
-    #     self.height += size[1]
-    #     self.update_obj(win)
-    #
-    #     cool = temp
-    #     px, py = self.rect_obj.center
-    #     cx, cy = cool
-    #
-    #     temp = px - cx, py - cy
-    #
-    #     self.x -= temp[0]
-    #     self.y -= temp[1]
+            win.blit(SPACESHIP, (self.x, self.y))
 
     def make_wall(self):
         """sets a node to the wall color"""

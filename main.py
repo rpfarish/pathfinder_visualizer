@@ -8,7 +8,6 @@ from pathfinder.node import Grid
 from pathfinder.search import Algorithm
 from pathfinder.utils import get_node_pos
 
-# - Pygame init -
 WIN = pygame.display.set_mode((pf.WIDTH, pf.HEIGHT))
 pygame.display.set_caption(f"Pathfinder v{pf.version}")
 pygame.display.set_icon(WIN)
@@ -17,7 +16,6 @@ pygame.display.set_icon(WIN)
 def main():
     """runs the pathfinder module"""
 
-    # - Update display -
     def redraw_window(win):
         """updates the entire screen"""
         WIN.fill((175, 216, 248))
@@ -30,18 +28,23 @@ def main():
         pygame.display.update(Grid.cache)
         Grid.cache.clear()
 
-    # - Setup -
     clock = pygame.time.Clock()
     graph = Grid(WIN)
     graph.draw_grid(WIN)
     maze = Maze(pf.GRID_SIZE)
-    alg_name = pf.settings.default_alg  # default alg
     curr_node_temp = None
     dragging = False
     visualized = False
-    # fill and update the display
     WIN.fill((175, 216, 248))
     redraw_window(WIN)
+
+    alg_map = {
+        pygame.K_a: 'astar',
+        pygame.K_b: 'bfs',
+        pygame.K_f: 'dfs',
+        pygame.K_d: 'dijkstra',
+        pygame.K_g: 'greedy',
+    }
 
     def run_search(win, graph_, auto=False):
         if not graph_.has_bomb:
@@ -55,25 +58,31 @@ def main():
                         graph_.walls, graph_.weights)
         alg(win, graph_, search_colors, auto)
 
-    def set_alg(alg_):
-        """resets weights if alg is switched to unweighted"""
-        if alg_ not in pf.settings.weighted:
-            graph.clear_weights(WIN)
-            for color in pf.SEARCH_COLORS:
-                graph.clear_searched(WIN, (color,))
-            else:
+    def set_alg(keys, alg_map, was_visualized):
+
+        for key, new_alg in alg_map.items():
+            alg_can_be_changed = keys[key] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT])
+            if alg_can_be_changed:
+                pf.settings.default_alg = new_alg
+                was_visualized = False
+                if new_alg in pf.settings.unweighted:
+                    graph.clear_weights(WIN)
+
+                for color in pf.SEARCH_COLORS:
+                    graph.clear_searched(WIN, (color,))
+
                 graph.clear_searched(WIN, (pf.YELLOW,))
-        return alg_
+                break
+
+        return was_visualized
 
     while True:
 
-        # - Pygame events -
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 raise SystemExit
 
-        # - Update loop state -
         update_nodes()
         clock.tick(2000)
         mouse = pygame.mouse.get_pos()
@@ -89,87 +98,53 @@ def main():
         if dragging:
             if not click[0]:
                 dragging = False
-            if curr_node_temp != curr_node:
+
+            elif curr_node_temp != curr_node:
                 graph.set_drag_state(WIN, curr_node_temp, curr_node)
                 curr_node_temp = curr_node
-                if visualized:
-                    run_search(WIN, graph, auto=True)
+
+            if visualized:
+                run_search(WIN, graph, auto=True)
 
             continue
 
-        # - Set alg names -
+        visualized = set_alg(keys, alg_map, visualized)
 
-        # A*
-        if keys[pygame.K_a] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            pf.settings.default_alg = set_alg('astar')
-
-        # Dijkstra
-        elif keys[pygame.K_d] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            pf.settings.default_alg = set_alg('dijkstra')
-
-        # BFS
-        elif keys[pygame.K_b] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            pf.settings.default_alg = set_alg('bfs')
-
-        # DFS
-        elif keys[pygame.K_f] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            pf.settings.default_alg = set_alg('dfs')
-
-        # Greedy
-        elif keys[pygame.K_g] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            pf.settings.default_alg = set_alg('greedy')
-
-        # - Set node state -
-
-        # Bomb
-        elif keys[pygame.K_b] and click[0]:
+        if keys[pygame.K_b] and click[0] and not graph.has_bomb:
             graph.set_bomb(WIN, curr_node)
-            # todo make bomb a png
 
-        # Weight
         elif keys[pygame.K_w] and click[0]:
             graph.set_weight(WIN, curr_node, pf.settings.default_alg)
 
-        # Wall
         elif click[0]:
             graph.set_wall(WIN, curr_node)
 
-        # Reset
         elif click[2] and curr_node not in (graph.end, graph.start):
             graph.clear_node(WIN, curr_node, True)
 
-        # Reset All Node
         elif keys[pygame.K_c]:
-            visualized = False
             graph.clear(WIN)
+            visualized = False
 
-        # - Mazes -
-
-        # Basic weight maze
         elif keys[pygame.K_m] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             if pf.settings.default_alg in pf.settings.weighted:
-                visualized = False
                 maze.basic_weight_maze(WIN, graph)
                 redraw_window(WIN)
+                visualized = False
 
-        # Basic random maze
         elif keys[pygame.K_m]:
-            visualized = False
             maze.basic_random_maze(WIN, graph)
             redraw_window(WIN)
+            visualized = False
 
-        # - Exit -
         if keys[pygame.K_ESCAPE]:
-            pygame.quit()
-            raise SystemExit
+            return "quit"
 
-        # Start Visualization
         if keys[pygame.K_RETURN] or keys[pygame.K_SPACE]:
             print('Visualization started with:', pf.settings.default_alg.title())
-            # Start Search
             run_search(WIN, graph)
-            visualized = True
             print('Visualization done')
+            visualized = True
 
 
 if __name__ == '__main__':

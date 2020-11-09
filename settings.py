@@ -1,27 +1,33 @@
 import json
 
 default = {
-    "default_alg": "astar",
-    "search_speed": 0.0055,
-    "weight_density": 15,
+    "file": "settings.json",
+    "version": "3.0.2",
     "weighted": [
         "astar",
         "dijkstra",
         "greedy"
     ],
-    "node_size": [
-        25,
-        25
+    "unweighted": [
+        "bfs",
+        "dfs"
     ],
-    "screen_size": {
-        "WIDTH": 1400,
-        "HEIGHT": 700
-    },
     "grid_size": {
         "WIDTH": 50,
         "HEIGHT": 25
     },
-    "version": "3.0.0"
+    "node_size": [
+        25,
+        25
+    ],
+    "default_alg": "dijkstra",
+    "screen_size": {
+        "WIDTH": 1400,
+        "HEIGHT": 700
+    },
+    "search_speed": 0.0055,
+    "weight_density": 20,
+    "done_loading": True
 }
 
 
@@ -33,6 +39,7 @@ class Settings:
         self.file = file
         self.version = None
         self.weighted = None
+        self.unweighted = None
         self.grid_size = None
         self.node_size = None
         self.default_alg = None

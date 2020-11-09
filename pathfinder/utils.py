@@ -1,4 +1,4 @@
-"""This module does blah blah."""
+"""This module contains various utility functions"""
 import functools
 import time
 
