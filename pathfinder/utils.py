@@ -74,8 +74,3 @@ def get_node_pos(node, mouse):
     cur_node_x = remap(mouse[0], OFFSET, node.grid[XGR].x + node.grid[XGR].width, 0, GRID_X)
     cur_node_y = remap(mouse[1], OFFSET, node.grid[YGR].y + node.grid[YGR].height, 0, GRID_Y)
     return cur_node_x, cur_node_y
-
-
-def foo_mystery():
-    """errs on the side of caution"""
-    raise SystemExit

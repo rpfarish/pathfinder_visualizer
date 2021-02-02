@@ -15,7 +15,8 @@ version = settings.version
 Color = namedtuple('Color', ['r', 'g', 'b'])
 
 # Colors
-WHITE = Color(255, 255, 255)
+WHITE = Color(100, 100, 100)
+# dark mode WHITE = Color(100, 100, 100)
 PINK = Color(252, 15, 192)
 DARK_PINK = Color(187, 0, 255)
 RED = Color(255, 0, 0)

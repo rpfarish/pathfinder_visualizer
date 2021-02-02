@@ -1,4 +1,5 @@
 """Controls entire project"""
+from typing import Sequence
 
 import pygame
 
@@ -34,7 +35,7 @@ def main():
     maze = Maze(pf.GRID_SIZE)
     curr_node_temp = None
     dragging = False
-    visualized = False
+
     WIN.fill((175, 216, 248))
     redraw_window(WIN)
 
@@ -46,7 +47,7 @@ def main():
         pygame.K_g: 'greedy',
     }
 
-    def run_search(win, graph_, auto=False):
+    def run_search(win, graph_: Grid, auto=False):
         if not graph_.has_bomb:
             node_list = [graph_.start, graph_.end]
             search_colors = [pf.BLUE]
@@ -58,7 +59,7 @@ def main():
                         graph_.walls, graph_.weights)
         alg(win, graph_, search_colors, auto)
 
-    def set_alg(keys, alg_map, was_visualized):
+    def set_alg(keys: Sequence[bool], alg_map: dict, was_visualized: bool):
 
         for key, new_alg in alg_map.items():
             alg_can_be_changed = keys[key] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT])
@@ -90,6 +91,20 @@ def main():
         keys = pygame.key.get_pressed()
         curr_node = get_node_pos(graph, mouse)
 
+        if click[0] and not any(keys):
+            graph.set_wall(WIN, curr_node)
+            continue
+
+        elif keys[pygame.K_b] and click[0] and not graph.has_bomb:
+            graph.set_bomb(WIN, curr_node)
+
+        elif keys[pygame.K_w] and click[0]:
+            graph.set_weight(WIN, curr_node, pf.settings.default_alg)
+            continue
+
+        elif click[2] and curr_node not in (graph.end, graph.start):
+            graph.clear_node(WIN, curr_node, True)
+
         if curr_node in graph.draggable:
             if click[0]:
                 dragging = True
@@ -103,39 +118,27 @@ def main():
                 graph.set_drag_state(WIN, curr_node_temp, curr_node)
                 curr_node_temp = curr_node
 
-            if visualized:
+            if graph.visualized:
                 run_search(WIN, graph, auto=True)
 
             continue
 
-        visualized = set_alg(keys, alg_map, visualized)
+        graph.visualized = set_alg(keys, alg_map, graph.visualized)
 
-        if keys[pygame.K_b] and click[0] and not graph.has_bomb:
-            graph.set_bomb(WIN, curr_node)
-
-        elif keys[pygame.K_w] and click[0]:
-            graph.set_weight(WIN, curr_node, pf.settings.default_alg)
-
-        elif click[0]:
-            graph.set_wall(WIN, curr_node)
-
-        elif click[2] and curr_node not in (graph.end, graph.start):
-            graph.clear_node(WIN, curr_node, True)
-
-        elif keys[pygame.K_c]:
+        if keys[pygame.K_c]:
             graph.clear(WIN)
-            visualized = False
+            graph.visualized = False
 
         elif keys[pygame.K_m] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
             if pf.settings.default_alg in pf.settings.weighted:
                 maze.basic_weight_maze(WIN, graph)
                 redraw_window(WIN)
-                visualized = False
+                graph.visualized = False
 
         elif keys[pygame.K_m]:
             maze.basic_random_maze(WIN, graph)
             redraw_window(WIN)
-            visualized = False
+            graph.visualized = False
 
         if keys[pygame.K_ESCAPE]:
             return "quit"
@@ -144,7 +147,7 @@ def main():
             print('Visualization started with:', pf.settings.default_alg.title())
             run_search(WIN, graph)
             print('Visualization done')
-            visualized = True
+            graph.visualized = True
 
 
 if __name__ == '__main__':

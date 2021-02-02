@@ -90,8 +90,7 @@ class Visualize:
     def pygame_quit():
         """
         Allows the user to exit,
-        allow pausing of the visualization
-        and keeps the window from freezing
+        keeps the window from freezing and
         silences the pygame display not init error
         """
         try:
@@ -182,8 +181,7 @@ class Visualize:
             if self[node].color != YELLOW:
                 area[node] = self.area_color
 
-        path = self._get_path_dict()
-        both = {**area, **path}
+        both = area | self._get_path_dict()
 
         for node, color in both.items():
             if self[node].color not in self.targets:
