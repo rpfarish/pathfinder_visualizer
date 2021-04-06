@@ -46,6 +46,6 @@ Hold down shift and one of these keys to change it.
 - D: Dijkstra
 - G: Greedy
 
-###Draggable Nodes:
+### Draggable Nodes:
 The start, end and bomb nodes are all draggable.
 Just click and drag.
