@@ -170,7 +170,7 @@ class Visualize:
         self._update(node, clear=True)
         self[node].is_target = False
         # time.sleep(1)
-        time.sleep(0.07)
+        time.sleep(settings.path_speed)
         self._render(node)
 
     def draw_both(self):

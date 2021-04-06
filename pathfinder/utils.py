@@ -2,6 +2,8 @@
 import functools
 import time
 
+from numpy import average
+
 from .constants import GRID_X, GRID_Y, OFFSET, XGR, YGR
 
 
@@ -17,6 +19,9 @@ def logger(fn):
     return func
 
 
+times = []
+
+
 def timer(fn):
     """decorator name to log method calls from classes"""
 
@@ -27,7 +32,9 @@ def timer(fn):
         start = time.perf_counter()
         result = fn(class_obj, *args, **kwargs)
         end = time.perf_counter()
-        print(f'{fn.__name__} was run in {round(end - start, 3)} seconds')
+        print(f'{fn.__name__} was run in {round(end - start, 6)} seconds')
+        times.append(round(end - start, 6))
+        print('Average:', average(times))
         return result
 
     return func

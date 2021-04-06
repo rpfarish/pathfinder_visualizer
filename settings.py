@@ -2,7 +2,8 @@ import json
 
 default = {
     "file": "settings.json",
-    "version": "3.0.2",
+    "version": "3.1.4",
+    "dark_mode": False,
     "weighted": [
         "astar",
         "dijkstra",
@@ -26,8 +27,8 @@ default = {
         "HEIGHT": 700
     },
     "search_speed": 0.0055,
-    "weight_density": 20,
-    "done_loading": True
+    "path_speed": 0.07,
+    "weight_density": 10
 }
 
 
@@ -38,6 +39,7 @@ class Settings:
     def __init__(self, file):
         self.file = file
         self.version = None
+        self.dark_mode = None
         self.weighted = None
         self.unweighted = None
         self.grid_size = None
@@ -45,14 +47,14 @@ class Settings:
         self.default_alg = None
         self.screen_size = None
         self.search_speed = None
+        self.path_speed = None
         self.weight_density = None
+        self.enable_diagonals = None
 
         self.load_from_json()
 
     def __setattr__(self, key, value):
-        """
-        Inspect setter for tracking the attributes accessed.
-        """
+        """Inspect setter for tracking the attributes accessed."""
         super().__setattr__(key, value)
         if self.__class__.done_loading:
             self.save_to_json()

@@ -3,8 +3,8 @@
 import pygame
 
 from . import settings
-from .constants import DARK_BLUE, GREEN, GRID_X, GRID_Y, HEIGHT, OFFSET, ORANGE, PINK, RED, SPACESHIP, WHITE, node_size, \
-    weight_density
+from .constants import DARK_BLUE, GREEN, GRID_X, GRID_Y, HEIGHT, OFFSET, ORANGE, PINK, RED, SEARCH_COLORS, SPACESHIP, \
+    WHITE, YELLOW, node_size, weight_density
 
 
 class Grid:
@@ -20,7 +20,6 @@ class Grid:
         self.grid = {(x, y): Node(win, WHITE, x, y, node_size[0], node_size[1])
                      for y in range(GRID_Y) for x in range(GRID_X)}
 
-        self.has_start = self.has_end = True
         self.has_bomb = False
         self.bomb = (None, None)
         self.visualized = False
@@ -31,6 +30,10 @@ class Grid:
         self[self.start].make_start()
         self[self.end].make_end()
 
+        self.wall_color = DARK_BLUE
+        self.weight_color = ORANGE
+        self.clear_color = WHITE
+
     def __getitem__(self, key):
         return self.grid[key]
 
@@ -40,16 +43,19 @@ class Grid:
     def __iter__(self):
         return iter(self.grid)
 
+    def __len__(self):
+        return len(self.grid)
+
     @property
     def walls(self):
         """:returns list of all walls as a int tuple"""
-        return [pos for pos in self if self[pos].color == DARK_BLUE]
+        return [pos for pos in self if self[pos].color == self.wall_color]
 
     @property
     def weights(self):
         """:returns dict of all weights as a int tuple: int map"""
-        return {pos: weight_density if self[pos].color == ORANGE else 1
-                for pos in self}
+        return {pos: weight_density if self[pos].color == self.weight_color
+        else 1 for pos in self}
 
     @property
     def draggable(self):
@@ -79,15 +85,13 @@ class Grid:
         for node in self.values():
             node.draw(win)
 
-    def draw_node(self, win, node):
+    def draw_node(self, win, node: tuple[int, int], redraw=True):
         """draws the node then caches its rect object to draw later"""
-        self[node].draw(win)
-        Grid.cache.append(self[node].rect_obj)
+        self[node].draw(win, redraw=redraw)
 
     def set_start(self, win, node: tuple[int, int]):
         """sets the state of the node to start"""
         if node != self.end and node != self.bomb:
-            self.has_start = True
             self.start = node
             self[node].make_start()
             self.draw_node(win, node)
@@ -95,7 +99,6 @@ class Grid:
     def set_end(self, win, node: tuple[int, int]):
         """sets the state of the node to end"""
         if node != self.start and node != self.bomb:
-            self.has_end = True
             self.end = node
             self[node].make_end()
             self.draw_node(win, node)
@@ -157,18 +160,12 @@ class Grid:
 
     def clear_node(self, win, node: tuple[int, int], draw=False):
         """resets the state of the node based on its current color"""
-        if self[node].color == GREEN:
-            self.has_start = False
-            self.start = (None, None)
-        elif self[node].color == RED:
-            self.has_end = False
-            self.end = (None, None)
-        elif self[node].color == PINK:
+        if self[node].color == PINK:
             self.has_bomb = False
             self.bomb = (None, None)
+
         self[node].clear()
-        if draw:
-            self.draw_node(win, node)
+        self.draw_node(win, node, redraw=draw)
 
     def clear(self, win, reset_targets=True):
         """
@@ -189,7 +186,7 @@ class Grid:
         else:
             self.set_start(win, start)
             self.set_end(win, end)
-            if self.has_bomb:
+            if None not in bomb:
                 self.set_bomb(win, bomb)
 
     def clear_searched(self, win, color, update=True):
@@ -205,6 +202,17 @@ class Grid:
                 node.draw(win)
         if update:
             pygame.display.update()
+
+    def reset_visualization(self, win):
+        """Clears all nodes"""
+
+        if settings.default_alg not in settings.weighted:
+            self.clear_weights(win)
+
+        for color in SEARCH_COLORS:
+            self.clear_searched(win, (color,))
+
+        self.clear_searched(win, (YELLOW,))
 
 
 class Node:
@@ -235,11 +243,12 @@ class Node:
         if not isinstance(self, type(self)) or type(self) is not type(other):
             return False
 
-        if len(self.__dict__) != len(other.__dict__):
+        elif len(self.__dict__) != len(other.__dict__):
             return False
 
-        if self.x == other.x and self.y == other.y and self.width == other.width and self.height == other.height \
-                and self.color == other.color and self.x_coord == other.y_coord and self.x_coord == other.y_coord \
+        elif self.x == other.x and self.y == other.y and self.width == other.width \
+                and self.height == other.height and self.color == other.color \
+                and self.x_coord == other.x_coord and self.y_coord == other.y_coord \
                 and self.is_target == other.is_target:
             return True
         else:
@@ -250,7 +259,8 @@ class Node:
 
     def __repr__(self):
         return f'{self.__class__.__name__}({self.win}, {self.color}, {self.x_coord}, ' \
-               f'{self.y_coord}, {self.width - self.__class__._offset}, {self.height - self.__class__._offset})'
+               f'{self.y_coord}, {self.width - self.__class__._offset}, ' \
+               f'{self.height - self.__class__._offset})'
 
     def __str__(self):
         return f'class name: {self.__class__.__name__},  color: {self.color}, ' \
