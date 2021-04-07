@@ -21,8 +21,8 @@
   ],
   "default_alg": "dijkstra",
   "screen_size": {
-    "WIDTH": 1400,
-    "HEIGHT": 700
+    "WIDTH": 1355,
+    "HEIGHT": 680
   },
   "search_speed": 0.0055,
   "path_speed": 0.07,
