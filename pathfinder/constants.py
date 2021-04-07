@@ -42,7 +42,9 @@ XGR = (GRID_X - 1, 0)
 YGR = (0, GRID_Y - 1)
 
 node_size = settings.node_size
-SPACESHIP = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), node_size)
+
+stretch_factor = (node_size, node_size)
+SPACESHIP = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), stretch_factor)
 
 SEARCH_COLORS = (DARK_PINK, BLUE, YELLOW)
 TARGET_COLORS = [RED, GREEN, PINK]

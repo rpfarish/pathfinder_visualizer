@@ -3,7 +3,7 @@ import json
 default = {
     "file": "settings.json",
     "version": "3.1.4",
-    "dark_mode": False,
+    "dark_mode": True,
     "weighted": [
         "astar",
         "dijkstra",
@@ -17,18 +17,16 @@ default = {
         "WIDTH": 50,
         "HEIGHT": 25
     },
-    "node_size": [
-        25,
-        25
-    ],
-    "default_alg": "dijkstra",
+    "node_size": 25,
+    "default_alg": "bfs",
     "screen_size": {
-        "WIDTH": 1400,
-        "HEIGHT": 700
+        "WIDTH": 1355,
+        "HEIGHT": 680
     },
     "search_speed": 0.0055,
     "path_speed": 0.07,
-    "weight_density": 10
+    "weight_density": 10,
+    "enable_diagonals": True,
 }
 
 

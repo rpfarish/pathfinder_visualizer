@@ -3,7 +3,6 @@
 from pathfinder.algorithms import *
 from pathfinder.constants import SEARCH_COLORS, YELLOW
 from pathfinder.node import Grid
-from pathfinder.utils import timer
 from .visualize import Visualize
 from .. import settings
 
@@ -36,7 +35,7 @@ class Algorithm:
     def _end(self):
         return self.node_list[self.node_count + 1]
 
-    @timer
+    # @timer
     def _get_search_data(self):
         """:returns result of the search"""
 

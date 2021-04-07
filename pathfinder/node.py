@@ -17,7 +17,7 @@ class Grid:
     cache = []
 
     def __init__(self, win):
-        self.grid = {(x, y): Node(win, WHITE, x, y, node_size[0], node_size[1])
+        self.grid = {(x, y): Node(win, WHITE, x, y, node_size, node_size)
                      for y in range(GRID_Y) for x in range(GRID_X)}
 
         self.has_bomb = False

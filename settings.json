@@ -15,10 +15,7 @@
     "WIDTH": 50,
     "HEIGHT": 25
   },
-  "node_size": [
-    25,
-    25
-  ],
+  "node_size": 25,
   "default_alg": "dijkstra",
   "screen_size": {
     "WIDTH": 1355,
