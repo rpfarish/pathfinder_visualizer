@@ -10,6 +10,8 @@ def dijkstra(start, end, wall, grid_size, weight_li):
     """
     The famous Dijkstra's Algorithm invented by Edsger Dijkstra and
     implemented with a priority queue.
+    Non-weighted nodes have a default weight of 1 and diagonal nodes
+    have a weight of square root of 2 when diagonals are enabled.
     """
     grid = THE_GRID.copy()
     prev = {start: None}
@@ -28,14 +30,18 @@ def dijkstra(start, end, wall, grid_size, weight_li):
         if curr is None or curr == end:
             break
 
-        for adj in adjacent_nodes(curr, wall, grid_size):
+        adj_nodes = adjacent_nodes(curr, wall, grid_size)
+
+        for adj in adj_nodes:
             pot_dist = curr_dist + weight_li[adj]
+            pot_dist += adj_nodes[adj]  # diagonal weight
             if pot_dist < grid[adj]:
-                if adj not in visited:
-                    visited.append(adj)
-                    queue.put((pot_dist, adj))
                 grid[adj] = pot_dist
                 prev[adj] = curr
+            if adj not in visited:
+                visited.append(adj)
+                queue.put((pot_dist, adj))
+
     return grid, prev, visited
 
 

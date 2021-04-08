@@ -35,7 +35,6 @@ class Algorithm:
     def _end(self):
         return self.node_list[self.node_count + 1]
 
-    # @timer
     def _get_search_data(self):
         """:returns result of the search"""
 
