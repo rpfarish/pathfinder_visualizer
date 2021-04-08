@@ -73,25 +73,26 @@ class Algorithm:
 
             self.node_count += 1
 
-        if auto:
-            for vis in Visualize.objs:
-                vis.draw_both()
-        else:
+        if not auto:
             # draw each graph search
             for vis in Visualize.objs:
                 end_found = vis.draw_search_area()
                 if not end_found:
                     break
-            else:
-                # draw each path
-                for vis in Visualize.objs:
-                    vis.draw_path()
-                    # print(len(vis))
+
+            # draw each path
+            for vis in Visualize.objs:
+                vis.draw_path()
+
+        else:
+            for vis in Visualize.objs:
+                vis.draw_both()
 
         self.node_count = 0
         Visualize.objs.clear()
 
-    def _clear(self, win, graph, update=True):
+    @staticmethod
+    def _clear(win, graph, update=True):
         """calls to class Grid to clear """
 
         for color in SEARCH_COLORS:

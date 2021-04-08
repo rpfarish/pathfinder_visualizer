@@ -105,6 +105,8 @@ class Grid:
 
     def set_bomb(self, win, node):
         """sets the state of the node to bomb"""
+        if not self.has_bomb:
+            self.visualized = False
         if node != self.start and node != self.end:
             self.has_bomb = True
             self.bomb = node

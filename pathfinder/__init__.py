@@ -1,4 +1,4 @@
-# """Pathfinder is a set of Python modules designed for visualizing paths between two points"""
+"""Pathfinder is a set of Python modules designed for visualizing paths between two points"""
 
 try:
     from pathfinder.constants import *
