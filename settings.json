@@ -1,7 +1,7 @@
 {
   "file": "settings.json",
   "version": "3.1.4",
-  "dark_mode": false,
+  "dark_mode": true,
   "weighted": [
     "astar",
     "dijkstra",

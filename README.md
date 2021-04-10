@@ -30,13 +30,13 @@ Note: This current version only supports pygame 2.0.0 and any other version is n
 ## Keyboard and Mouse Commands
 
 - Spacebar or Enter: Visualizes the current algorithm
-- Right Click: Places a wall on the selected node
+- Left Click: Places a wall on the selected node
 - C: Resets the grid
 - Right Click: Clears the selected node
 - M: Generates a basic random maze
 - Shift + M: Generates a basic random weight maze
-- W + Right Click: Places a weight on the selected node
-- B + Right Click: Places a bomb on the selected node (at most 1)
+- W + Left Click: Places a weight on the selected node
+- B + Left Click: Places a bomb on the selected node (at most 1)
 - Esc: Quit
 ### Switch the current algorithm:
 Hold down shift and one of these keys to change it.
