@@ -13,7 +13,6 @@ if str(pygame.version.vernum) == '2.0.0':
 
 else:
     error = f"Installed Pygame version {pygame.version.vernum} is incompatible with the current version" \
-            f"of Pathfinder {__version__} \nPlease use the command 'pip uninstall pygame' " \
-            f"and then 'pip install pygame==2.0.0' to install the correct version of pygame."
-
+            f"of Pathfinder {__version__} \nPlease use the commands 'pip uninstall pygame' " \
+            f"and 'pip install pygame==2.0.0' to install the correct version of pygame."
     quit(code=error)

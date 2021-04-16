@@ -320,3 +320,7 @@ class Node:
             self.prev_state = self.make_weight
         elif self.color == WHITE:
             self.prev_state = self.clear
+        elif self.color == GREEN:
+            self.prev_state = self.make_start
+        elif self.color == RED:
+            self.prev_state = self.make_end

@@ -7,7 +7,7 @@ basic usage:
  example_button
 
 
- bfs_b = Button(window, light_gray, x=100, y=100, width=100, height=25, win_w=win_width,
+ bfs_b = Button(window, LIGHT_GRAY, x=100, y=100, width=100, height=25, win_w=win_width,
                    win_h=win_height, text="BFS", font_size=20, button_value="BFS")
 
  include: Button.update_all_buttons(mouse, click[0])
@@ -28,19 +28,19 @@ import pygame
 pygame.font.init()
 
 # Grays
-light_gray = (175, 175, 175)
-medium_gray = (140, 140, 140)
-dark_gray = (110, 110, 110)
-very_dark_gray = (50, 50, 50)
+LIGHT_GRAY = (175, 175, 175)
+MEDIUM_GRAY = (140, 140, 140)
+DARK_GRAY = (110, 110, 110)
+VERY_DARK_GRAY = (50, 50, 50)
 
-# Primary, black and white colors
-white = (230, 230, 230)
-red = (255, 0, 0)
-dark_red = (225, 0, 0)
-yellow = (235, 235, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
-black = (0, 0, 0)
+# Primary, BLACK and WHITE colors
+WHITE = (230, 230, 230)
+RED = (255, 0, 0)
+DARK_RED = (225, 0, 0)
+YELLOW = (235, 235, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+BLACK = (0, 0, 0)
 
 
 class Button:
@@ -48,7 +48,7 @@ class Button:
     Creates responsive, interactive, versatile, and scalable buttons for pygame
     :param win: pygame display window
     :param color: color of the button in rgb
-    :param x:  pixel coord pos (x location)
+    :param x: pixel coord pos (x location)
     :param y: pixel coord pos (y location)
     :param width: width of the button
     :param height: height of the button
@@ -67,7 +67,7 @@ class Button:
 
     def __init__(self, win, color: tuple, x, y, width, height, win_w: int, win_h: int, text: str,
                  font_size: int, button_value: any = None, text_color: tuple = None, font: str = None,
-                 obj_li: list = None, cycle_values: list = None):
+                 obj_li: list = None, cycle_values: list[any] = None):
         assert isinstance(win, pygame.Surface)
         self.__class__.buttons.append(self)
         self.Win = win
@@ -112,13 +112,24 @@ class Button:
         for obj in cls.buttons:
             obj.handle_mouse(mouse, click)
 
+    @property
+    def text_center_width(self) -> int:
+        return (self.width // 2) + self.x - self.text_label.get_width() // 2
+
+    @property
+    def text_center_height(self) -> int:
+        return (self.height // 2) + self.y - self.text_label.get_height() // 2
+
+    @property
+    def text_center(self) -> tuple[int, int]:
+        return self.text_center_width, self.text_center_height
+
     def draw(self) -> None:
         """
         draws the button rect and then the text centered over it
         """
         pygame.draw.rect(self.Win, self.color, (self.x, self.y, self.width, self.height))
-        self.Win.blit(self.text_label, ((self.width // 2) + self.x - self.text_label.get_width() // 2,
-                                        (self.height // 2) + self.y - self.text_label.get_height() // 2))
+        self.Win.blit(self.text_label, self.text_center)
 
     def draw_resize(self, width: int, height: int, x_offset: float = 0, y_offset: float = 0) -> None:
         """
@@ -131,15 +142,14 @@ class Button:
         self.x = width // 2 - self.width // 2 + int(x_offset * width)
         self.y = height // 2 - self.height // 2 + int(y_offset * height)
         pygame.draw.rect(self.Win, self.color, (self.x, self.y, self.width, self.height))
-        self.Win.blit(self.text_label, ((self.width // 2) + self.x - self.text_label.get_width() // 2,
-                                        (self.height // 2) + self.y - self.text_label.get_height() // 2))
+        self.Win.blit(self.text_label, self.text_center)
 
     def _hover(self, mouse: tuple) -> bool:
         if self.x < mouse[0] < self.x + self.width and self.y < mouse[1] < self.y + self.height:
-            self.color = medium_gray
+            self.color = MEDIUM_GRAY
             return True
         else:
-            self.color = light_gray
+            self.color = LIGHT_GRAY
             return False
 
     def change_text(self, new_text: str) -> None:
@@ -257,12 +267,12 @@ class Button:
         """
         if self.clickable and click and not self._click_lock:
             self._click_lock = True
-            self.color = dark_gray
+            self.color = DARK_GRAY
             self.draw()
             pygame.display.update()
             return func(*args, **kwargs)
         elif self.clickable and click:
-            self.color = dark_gray
+            self.color = DARK_GRAY
 
         if not click:
             self._click_lock = False

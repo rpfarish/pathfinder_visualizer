@@ -4,17 +4,17 @@ from collections import namedtuple
 
 import pygame
 
-from settings import Settings
-
 # load settings from settings.json
+from .settings import Settings
+
 settings = Settings('settings.json')
 
 # Version
 version = settings.version
 
+# Colors
 Color = namedtuple('Color', ['r', 'g', 'b'])
 
-# Colors
 if settings.dark_mode:
     WHITE = DARK_MODE_WHITE = Color(100, 100, 100)
 else:
@@ -26,6 +26,7 @@ RED = Color(255, 0, 0)
 ORANGE = Color(255, 140, 0)
 YELLOW = Color(255, 254, 106)
 GREEN = Color(0, 255, 0)
+LIGHT_BLUE = Color(175, 216, 248)
 BLUE = Color(64, 206, 227)
 DARK_BLUE = Color(15, 66, 88)
 

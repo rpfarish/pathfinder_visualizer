@@ -2,12 +2,13 @@
 import numpy as np
 from numpy.linalg import matrix_power
 
-# @timer
 from pathfinder import settings
 
 
 def adjacent_nodes(node: tuple, wall, grid_size):
     """
+    Gets the adjacent nodes of the current node within the bounds of the grid and excludes walls.
+    If diagonals are enabled, it then joins the adjacent nodes to the diagonal nodes.
     :param node: node coordinate
     :param wall: list of walls
     :param grid_size: a tuple eg (3, 2)

@@ -18,7 +18,7 @@ default = {
         "HEIGHT": 25
     },
     "node_size": 25,
-    "default_alg": "bfs",
+    "default_alg": "dijkstra",
     "screen_size": {
         "WIDTH": 1355,
         "HEIGHT": 680
@@ -26,7 +26,7 @@ default = {
     "search_speed": 0.0055,
     "path_speed": 0.07,
     "weight_density": 10,
-    "enable_diagonals": True,
+    "enable_diagonals": False,
 }
 
 

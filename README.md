@@ -31,15 +31,20 @@ Note: This current version only supports pygame 2.0.0 and any other version is n
 
 - Spacebar or Enter: Visualizes the current algorithm
 - Left Click: Places a wall on the selected node
-- C: Resets the grid
 - Right Click: Clears the selected node
+- C: Resets the grid
 - M: Generates a basic random maze
 - Shift + M: Generates a basic random weight maze
 - W + Left Click: Places a weight on the selected node
 - B + Left Click: Places a bomb on the selected node (at most 1)
+- Backspace: Exits the search in progress
+- P: Pauses the search
 - Esc: Quit
+
 ### Switch the current algorithm:
-Hold down shift and one of these keys to change it.
+
+Hold down shift and one of these keys to change the algorithm.
+
 - A: A*
 - B: BFS
 - F: DFS
@@ -47,5 +52,5 @@ Hold down shift and one of these keys to change it.
 - G: Greedy
 
 ### Draggable Nodes:
-The start, end and bomb nodes are all draggable.
-Just click and drag.
+
+The start, end and bomb nodes are all draggable. Just click and drag to reposition.

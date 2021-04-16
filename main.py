@@ -20,9 +20,8 @@ def main():
 
     def redraw_window(win):
         """Updates the entire screen"""
-        WIN.fill((175, 216, 248))
+        WIN.fill(pf.LIGHT_BLUE)
         graph.draw_grid(win)
-
         pygame.display.update()
 
     def update_nodes():
@@ -157,6 +156,5 @@ def main():
             print('Visualization done')
 
 
-# todo enable diagonals in settings
 if __name__ == '__main__':
     main()
