@@ -1,10 +1,10 @@
-"""Creates and controls the getting setting of Node objects"""
+"""Creates and controls the getting and setting of Node objects through a Grid object"""
 
 import pygame
 
 from . import settings
-from .constants import DARK_BLUE, GREEN, GRID_X, GRID_Y, HEIGHT, OFFSET, ORANGE, PINK, RED, SEARCH_COLORS, SPACESHIP, \
-    WHITE, YELLOW, node_size, weight_density
+from .constants import DARK_BLUE, GREEN, ORANGE, PINK, RED, WEIGHTED, WHITE, YELLOW
+from .constants import GRID_X, GRID_Y, HEIGHT, NODE_SIZE, OFFSET, SEARCH_COLORS, SPACESHIP, WEIGHT_DENSITY
 
 
 class Grid:
@@ -17,8 +17,11 @@ class Grid:
     cache = []
 
     def __init__(self, win):
-        self.grid = {(x, y): Node(win, WHITE, x, y, node_size, node_size)
-                     for y in range(GRID_Y) for x in range(GRID_X)}
+
+        self.grid = {
+            (x, y): Node(win, WHITE, x, y, NODE_SIZE)
+            for y in range(GRID_Y) for x in range(GRID_X)
+        }
 
         self.has_bomb = False
         self.bomb = (None, None)
@@ -54,7 +57,7 @@ class Grid:
     @property
     def weights(self):
         """:returns dict of all weights as a int tuple: int map"""
-        return {pos: weight_density if self[pos].color == self.weight_color
+        return {pos: WEIGHT_DENSITY if self[pos].color == self.weight_color
         else 1 for pos in self}
 
     @property
@@ -103,7 +106,7 @@ class Grid:
             self[node].make_end()
             self.draw_node(win, node)
 
-    def set_bomb(self, win, node):
+    def set_bomb(self, win, node: tuple[int, int]):
         """sets the state of the node to bomb"""
         if not self.has_bomb:
             self.visualized = False
@@ -122,12 +125,12 @@ class Grid:
 
     def set_weight(self, win, node: tuple[int, int], alg: str):
         """sets the state of the node to weight"""
-        if alg in settings.weighted and node != self.start and node != self.end:
+        if alg in WEIGHTED and node != self.start and node != self.end:
             self.clear_node(win, node)
             self[node].make_weight()
             self.draw_node(win, node)
 
-    def set_drag_state(self, win, last, curr):
+    def set_drag_state(self, win, last: tuple[int, int], curr: tuple[int, int]):
         """
         Sets the state of the nodes when it is
         being dragged and dragged over
@@ -208,7 +211,7 @@ class Grid:
     def reset_visualization(self, win):
         """Clears all nodes"""
 
-        if settings.default_alg not in settings.weighted:
+        if settings.default_alg not in WEIGHTED:
             self.clear_weights(win)
 
         for color in SEARCH_COLORS:
@@ -224,9 +227,9 @@ class Node:
     """
     _offset = 1
 
-    def __init__(self, win, color, x, y, width, height,
-                 x_coord=None, y_coord=None):
+    def __init__(self, win, color, x, y, width, x_coord=None, y_coord=None):
 
+        height = width
         self.win = win
         self.color = color
         self.x = HEIGHT // GRID_Y * x + OFFSET if x_coord is None else x_coord

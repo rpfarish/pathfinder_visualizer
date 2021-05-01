@@ -83,7 +83,7 @@ class Algorithm:
             for vis in Visualize.objs:
                 vis.draw_path()
 
-        else:
+        if settings.visualize_when_dragging:
             for vis in Visualize.objs:
                 vis.draw_both()
 

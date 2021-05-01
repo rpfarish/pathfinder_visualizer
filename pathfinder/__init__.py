@@ -3,8 +3,8 @@ import pygame
 
 try:
     from pathfinder.constants import *
-except (ImportError, IOError):
-    quit(code="Pathfinder.constants is missing")
+except (ImportError, IOError) as e:
+    quit(code="Pathfinder.constants cannot be imported.\nError message: {}".format(e))
 
 __version__ = settings.version
 

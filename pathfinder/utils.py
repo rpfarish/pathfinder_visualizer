@@ -4,12 +4,11 @@ import time
 
 from numpy import average
 
-from .constants import GRID_X, GRID_Y, OFFSET, XGR, YGR
+from .constants import GRID_X, GRID_Y, OFFSET
 
 
 def logger(fn):
     """decorator name to log method calls from classes"""
-
     @functools.wraps(fn)
     def func(class_obj, *args, **kwargs):
         """logs method calls from classes"""
@@ -28,7 +27,6 @@ def timer(fn):
     @functools.wraps(fn)
     def func(class_obj, *args, **kwargs):
         """logs method calls from classes"""
-
         start = time.perf_counter()
         result = fn(class_obj, *args, **kwargs)
         end = time.perf_counter()
@@ -69,15 +67,17 @@ def constrain(val, min_val, max_val) -> int:
 
 
 def remap(x, in_min, in_max, out_min, out_max) -> int:
-    """Given an input range and output range, maps the value x to the output range.
-        eg x=3, in_min=0, in_max=10, out_min=0, out_max=100 returns 30.
-        Answer will always be truncated.
+    """
+    Given an input range and output range, maps the value x to the output range.
+    eg x=3, in_min=0, in_max=10, out_min=0, out_max=100 returns 30.
+    Answer will always be truncated.
     """
     return constrain((x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min, 0, out_max - 1)
 
 
-def get_node_pos(node, mouse):
+def get_node_pos(node, mouse) -> tuple[int, int]:
     """API to remap the value of mouse to an index tuple to access the correct grid member"""
-    cur_node_x = remap(mouse[0], OFFSET, node.grid[XGR].x + node.grid[XGR].width, 0, GRID_X)
-    cur_node_y = remap(mouse[1], OFFSET, node.grid[YGR].y + node.grid[YGR].height, 0, GRID_Y)
+    xgr, ygr = (GRID_X - 1, 0), (0, GRID_Y - 1)
+    cur_node_x = remap(mouse[0], OFFSET, node.grid[xgr].x + node.grid[xgr].width, 0, GRID_X)
+    cur_node_y = remap(mouse[1], OFFSET, node.grid[ygr].y + node.grid[ygr].height, 0, GRID_Y)
     return cur_node_x, cur_node_y

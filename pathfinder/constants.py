@@ -4,22 +4,30 @@ from collections import namedtuple
 
 import pygame
 
-# load settings from settings.json
 from .settings import Settings
 
+# Load Settings
 settings = Settings('settings.json')
 
 # Version
 version = settings.version
 
+# Last Loaded Alg
+default_alg = settings.default_alg
+
+# Supported Algs
+WEIGHTED = [
+    "astar",
+    "dijkstra",
+    "greedy"
+]
+unweighted = [
+    "bfs",
+    "dfs"
+]
+
 # Colors
 Color = namedtuple('Color', ['r', 'g', 'b'])
-
-if settings.dark_mode:
-    WHITE = DARK_MODE_WHITE = Color(100, 100, 100)
-else:
-    WHITE = LIGHT_MODE_WHITE = Color(255, 255, 255)
-
 PINK = Color(252, 15, 192)
 DARK_PINK = Color(187, 0, 255)
 RED = Color(255, 0, 0)
@@ -29,24 +37,29 @@ GREEN = Color(0, 255, 0)
 LIGHT_BLUE = Color(175, 216, 248)
 BLUE = Color(64, 206, 227)
 DARK_BLUE = Color(15, 66, 88)
+SEARCH_COLORS = (DARK_PINK, BLUE, YELLOW)
+TARGET_COLORS = [RED, GREEN, PINK]
 
-OFFSET = 3
+# Dark Mode
+if settings.dark_mode:
+    WHITE = DARK_MODE_WHITE = Color(100, 100, 100)
+else:
+    WHITE = LIGHT_MODE_WHITE = Color(255, 255, 255)
 
+# Screen Properties
 WIDTH, HEIGHT = settings.screen_size["WIDTH"], settings.screen_size["HEIGHT"]
+
+# Grid Properties
 GRID_X, GRID_Y = settings.grid_size["WIDTH"], settings.grid_size["HEIGHT"]
 GRID_SIZE: tuple = GRID_X, GRID_Y
 GRID_OFFSET: tuple = (GRID_X - 1, GRID_Y - 1)
 
-weight_density: int = settings.weight_density
-default_alg = settings.default_alg
-XGR = (GRID_X - 1, 0)
-YGR = (0, GRID_Y - 1)
+# Node Properties
+OFFSET = 3
+NODE_SIZE = settings.node_size
+WEIGHT_DENSITY: int = settings.weight_density
+MAZE_DENSITY: float = settings.maze_density
 
-node_size = settings.node_size
-
-stretch_factor = (node_size, node_size)
+# Load Spaceship
+stretch_factor = (NODE_SIZE, NODE_SIZE)
 SPACESHIP = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), stretch_factor)
-
-SEARCH_COLORS = (DARK_PINK, BLUE, YELLOW)
-TARGET_COLORS = [RED, GREEN, PINK]
-THE_GRID = {(x, y): float("inf") for y in range(GRID_Y) for x in range(GRID_X)}

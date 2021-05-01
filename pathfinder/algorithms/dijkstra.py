@@ -1,6 +1,6 @@
 from queue import PriorityQueue
 
-from pathfinder.constants import THE_GRID
+from pathfinder.constants import GRID_X, GRID_Y
 from pathfinder.utils import cache
 from .adjacent_nodes import adjacent_nodes
 
@@ -13,13 +13,9 @@ def dijkstra(start, end, wall, grid_size, weight_li):
     Non-weighted nodes have a default weight of 1 and diagonal nodes
     have a weight of square root of 2 when diagonals are enabled.
     """
-    grid = THE_GRID.copy()
+    grid = {(x, y): float("inf") for y in range(GRID_Y) for x in range(GRID_X) if (x, y) not in wall}
     prev = {start: None}
     queue = PriorityQueue()
-
-    for i in THE_GRID:
-        if i in wall:
-            grid.pop(i)
 
     queue.put((0, start))
     grid[start] = 0

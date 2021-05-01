@@ -5,7 +5,7 @@ from math import log
 import pygame
 
 from pathfinder import settings
-from pathfinder.constants import GREEN, ORANGE, PINK, RED, YELLOW
+from pathfinder.constants import GREEN, ORANGE, PINK, RED, WEIGHTED, YELLOW
 from pathfinder.node import Grid
 
 used_keys = [pygame.K_p, pygame.K_SPACE]
@@ -42,7 +42,7 @@ class Visualize:
                  search_speed, level, parent, searched):
         Visualize.objs.append(self)
         self.targets = [RED, GREEN, PINK]
-        if alg in settings.weighted:
+        if alg in WEIGHTED:
             self.targets.append(ORANGE)
         self.speed = search_speed
         self._speed = search_speed
@@ -89,9 +89,9 @@ class Visualize:
     @staticmethod
     def pygame_quit():
         """
-        Allows the user to exit,
+        Allows the user to exit, to pause,
         keeps the window from freezing and
-        silences the pygame display not init error
+        silences the pygame display not init error.
         """
         try:
             for event in pygame.event.get():
@@ -169,11 +169,11 @@ class Visualize:
         self[node].is_target = True
         self._update(node, clear=True)
         self[node].is_target = False
-        # time.sleep(1)
         time.sleep(settings.path_speed)
         self._render(node)
 
     def draw_both(self):
+        """visualizes the search area and draws the path"""
         area = {}
         for node in self.searched_nodes:
             if self[node].color == self.end_color:
@@ -203,8 +203,7 @@ class Visualize:
                 elif self[node].color == ORANGE:
                     self._draw_path_node(node)
 
-            else:
-                pygame.display.flip()
+            pygame.display.update()
 
     def draw_search_area(self):
         """draws the search area"""
@@ -227,6 +226,5 @@ class Visualize:
                 self[node].color = self.area_color
                 self._render(node)
 
-        else:
-            print('No solution was found')
-            return False
+        print('No solution was found')
+        return False

@@ -56,7 +56,7 @@ def main():
 
     # SETUP VARIABLES
     graph = Grid(WIN)
-    maze = Maze(pf.GRID_SIZE)
+    maze = Maze()
     curr_node_temp = None
     dragging = False
     running = True
@@ -129,7 +129,7 @@ def main():
 
         # SET MAZES
         elif keys[pygame.K_m] and (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]):
-            if pf.settings.default_alg in pf.settings.weighted:
+            if pf.settings.default_alg in pf.WEIGHTED:
                 maze.basic_weight_maze(WIN, graph)
                 redraw_window(WIN)
                 graph.visualized = False
@@ -154,6 +154,10 @@ def main():
             run_search(WIN, graph)
             graph.visualized = True
             print('Visualization done')
+
+        # RELOAD SETTINGS
+        if keys[pygame.K_l]:
+            pf.settings.load_from_json()
 
 
 if __name__ == '__main__':
