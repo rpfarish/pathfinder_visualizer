@@ -36,7 +36,7 @@ is not guaranteed to work.
 - **Visualize Algorithm:** <kbd>Spacebar</kbd> **or** <kbd>Enter</kbd>
 - **Place Wall:** <kbd>Left Click</kbd>
 - **Clear Node:** <kbd>Right Click</kbd>
-- **Reset Grid:** <kbd>C</kbd>
+- **Clear/Reset Grid:** <kbd>C</kbd>
 - **Pause/Resume Search:** <kbd>P</kbd>
 - **Exit Search:** <kbd>Backspace</kbd>
 - **Place Weight:**  <kbd>W</kbd> + <kbd>Left Click</kbd> **(only for weighted algs)**
