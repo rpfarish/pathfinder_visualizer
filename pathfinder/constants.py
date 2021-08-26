@@ -21,7 +21,7 @@ WEIGHTED = [
     "dijkstra",
     "greedy"
 ]
-unweighted = [
+UNWEIGHTED = [
     "bfs",
     "dfs"
 ]
@@ -38,7 +38,7 @@ LIGHT_BLUE = Color(175, 216, 248)
 BLUE = Color(64, 206, 227)
 DARK_BLUE = Color(15, 66, 88)
 SEARCH_COLORS = (DARK_PINK, BLUE, YELLOW)
-TARGET_COLORS = [RED, GREEN, PINK]
+TARGET_COLORS = (RED, GREEN, PINK)
 
 # Dark Mode
 if settings.dark_mode:
@@ -56,10 +56,15 @@ GRID_OFFSET: tuple = (GRID_X - 1, GRID_Y - 1)
 
 # Node Properties
 OFFSET = 3
-NODE_SIZE = settings.node_size
+NODE_SIZE: int = settings.node_size
 WEIGHT_DENSITY: int = settings.weight_density
-MAZE_DENSITY: float = settings.maze_density
+MAZE_DENSITY_PERCENTAGE: float = settings.maze_density_percentage
+
+stretch_factor = (NODE_SIZE, NODE_SIZE)
 
 # Load Spaceship
-stretch_factor = (NODE_SIZE, NODE_SIZE)
-SPACESHIP = pygame.transform.scale(pygame.image.load(os.path.join('assets', 'spaceship.png')), stretch_factor)
+spaceship_png = pygame.image.load(os.path.join('assets', 'spaceship.png'))
+SPACESHIP = pygame.transform.scale(spaceship_png, stretch_factor)
+# Load Bomb
+bomb_png = pygame.image.load(os.path.join('assets', 'bomb.png'))
+BOMB = pygame.transform.scale(bomb_png, stretch_factor)
