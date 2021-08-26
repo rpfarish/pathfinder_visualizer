@@ -2,12 +2,9 @@
 import random
 
 from .algorithms import greedy
-from .constants import GRID_OFFSET, GRID_SIZE, MAZE_DENSITY, TARGET_COLORS
+from .constants import GRID_OFFSET, GRID_SIZE
+from .constants import MAZE_DENSITY_PERCENTAGE, TARGET_COLORS
 from .node import Grid
-
-
-def _clear(win, graph: Grid):
-    graph.clear(win, reset_targets=False)
 
 
 class Maze:
@@ -17,47 +14,51 @@ class Maze:
         self.grid_x, self.grid_y = GRID_SIZE
 
     @property
-    def can_place_wall(self) -> bool:
-        """
-        :returns if a wall can be placed based
-        on the maze density percentage
-        """
-        return random.uniform(0, 1) < MAZE_DENSITY
+    def _can_place_wall(self) -> bool:
+        """:returns if a wall can be placed based on a density percentage"""
+        return random.uniform(0, 1) < MAZE_DENSITY_PERCENTAGE
 
     @staticmethod
-    def is_connected(graph, start, end):
+    def _clear(win, graph: Grid):
+        graph.clear(win, reset_targets=False)
+
+    @staticmethod
+    def _is_connected(graph, start, end) -> bool:
         """:returns if there is a path between start and end"""
         score, *_ = greedy(start, end, graph.walls, GRID_OFFSET, graph.weights)
-        return False if score[end] == float('inf') else True
+        return score[end] != float('inf')
 
-    def has_solution(self, graph):
-        """:returns if there is a path between all nodes on graph"""
+    def _has_solution(self, graph) -> bool:
+        """:returns if there is a path between all target nodes on graph"""
         if graph.has_bomb:
-            start_to_bomb = self.is_connected(graph, graph.start, graph.bomb)
-            bomb_to_end = self.is_connected(graph, graph.bomb, graph.end)
-            if start_to_bomb and bomb_to_end:
-                return True
-        return True if self.is_connected(graph, graph.start, graph.end) else False
+            start_to_bomb = self._is_connected(graph, graph.start, graph.bomb)
+            bomb_to_end = self._is_connected(graph, graph.bomb, graph.end)
+            return start_to_bomb and bomb_to_end
+
+        return self._is_connected(graph, graph.start, graph.end)
 
     def basic_random_maze(self, win, graph: Grid):
-        """Basic random maze"""
-        _clear(win, graph)
+        """Generates a basic random maze"""
+        self._clear(win, graph)
+
         for x in range(self.grid_x):
             for y in range(self.grid_y):
-                if self.can_place_wall and graph[(x, y)].color not in TARGET_COLORS:
+                is_target = graph[(x, y)].color in TARGET_COLORS
+                if self._can_place_wall and not is_target:
                     graph[(x, y)].make_wall()
-
-        if self.has_solution(graph):
+        if self._has_solution(graph):
             graph.draw_grid(win)
         else:
             self.basic_random_maze(win, graph)
 
     def basic_weight_maze(self, win, graph: Grid):
-        """Basic random weight maze"""
-        _clear(win, graph)
+        """Generates a basic random weight maze"""
+        self._clear(win, graph)
+
         for x in range(self.grid_x):
             for y in range(self.grid_y):
-                if self.can_place_wall and graph[(x, y)].color not in TARGET_COLORS:
+                is_target = graph[(x, y)].color in TARGET_COLORS
+                if self._can_place_wall and not is_target:
                     graph[(x, y)].make_weight()
 
         graph.draw_grid(win)
