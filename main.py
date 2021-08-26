@@ -81,25 +81,27 @@ while running:
     # UPDATE STATES
     update_nodes()
     clock.tick(2000)
+
     mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed(num_buttons=3)
+    left_click, _, right_click = pygame.mouse.get_pressed(num_buttons=3)
+    curr_node = get_node_pos(graph, mouse)  # Node hovered by mouse
+
     keys = pygame.key.get_pressed()
     shift = (keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT])
-    curr_node = get_node_pos(graph, mouse)  # Node hovered by mouse
+
     set_alg(keys, alg_map)  # Change current alg
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
-            raise SystemExit
+            quit()
 
     # DRAGGABLE NODES
     if curr_node in graph.draggable:
-        if click[0]:
+        if left_click:
             dragging = True
             curr_node_temp = curr_node
 
-    if not click[0]:
+    if not left_click:
         dragging = False
 
     if dragging:
@@ -117,18 +119,18 @@ while running:
         continue
 
     # SET AND CLEAR NODES
-    if click[0] and not any(keys) and curr_node not in graph.draggable:
+    if left_click and not any(keys) and curr_node not in graph.draggable:
         graph.set_wall(WIN, curr_node)
         continue
 
-    elif keys[pygame.K_b] and click[0] and not graph.has_bomb:
+    elif keys[pygame.K_b] and left_click and not graph.has_bomb:
         graph.set_bomb(WIN, curr_node)
 
-    elif keys[pygame.K_w] and click[0]:
+    elif keys[pygame.K_w] and left_click:
         graph.set_weight(WIN, curr_node, pf.settings.default_alg)
         continue
 
-    elif click[2] and curr_node not in (graph.end, graph.start):
+    elif right_click and curr_node not in (graph.end, graph.start):
         graph.clear_node(WIN, curr_node, True)
 
     # SET MAZES
