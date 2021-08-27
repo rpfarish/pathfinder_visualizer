@@ -7,14 +7,14 @@ from ..utils import cache
 
 @cache
 def h(p1, p2):
-    """manhattan distance"""
+    """Manhattan distance"""
     (x1, y1), (x2, y2) = p1, p2
     return abs(x1 - x2) + abs(y1 - y2)
 
 
 @cache
 def astar(start, end, wall, grid_size, weight_li):
-    """the A* algorithm"""
+    """The A* algorithm"""
     open_set = PriorityQueue()
     open_set.put((0, start))
     parent = {start: None}
