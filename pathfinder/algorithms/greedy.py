@@ -1,8 +1,8 @@
 """The Greedy Best-first Search"""
 from queue import PriorityQueue
 
-from .adjacent_nodes import adjacent_nodes
-from ..utils import cache, h
+from .adjacent_nodes import adjacent_nodes, h
+from ..utils import cache
 
 
 @cache
