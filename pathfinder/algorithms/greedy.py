@@ -1,4 +1,4 @@
-"""The greedy algorithm"""
+"""The Greedy Best-first Search"""
 from queue import PriorityQueue
 
 from .adjacent_nodes import adjacent_nodes
