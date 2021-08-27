@@ -30,19 +30,3 @@ def dfs(start, end, wall, grid_size):
                 parent[adj] = curr
 
     return level, parent, visited
-
-
-if __name__ == "__main__":
-    _start = (0, 0)
-    _end = (3, 1)
-    a, _parent, c = dfs(_start, _end, [(1, 1), (1, 2), (0, 2)], (5, 5))
-    ra = a[::-1]
-
-    if _end in _parent:
-        end_parent = _parent[_end]
-        path = [end_parent]
-        while end_parent is not None:
-            end_parent = _parent[end_parent]
-            path.append(end_parent)
-        print(ra)
-        print(path)
