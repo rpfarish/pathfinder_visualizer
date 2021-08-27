@@ -93,3 +93,10 @@ def key_lock(keys, index: int, prev_states: list):
     is_on_press = key_state and not prev_state  # Detects logic rising edge
     prev_states[index] = key_state
     return is_on_press
+
+
+@cache
+def h(p1, p2):
+    """Manhattan distance"""
+    (x1, y1), (x2, y2) = p1, p2
+    return abs(x1 - x2) + abs(y1 - y2)
