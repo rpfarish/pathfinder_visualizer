@@ -7,7 +7,8 @@ from ..utils import cache
 def bfs(start, end, wall, grid_size):
     """
     Define a nodes location as a tuple e.g. (3,4) and (2,4),
-        and a node is adjacent if it can be reached by moving either x or y by |1| away (1 or -1).
+    and a node is adjacent if it can be reached by
+    moving either x or y by |1| away (1 or -1).
     """
     level = {start: 0}
     parent = {start: None}
