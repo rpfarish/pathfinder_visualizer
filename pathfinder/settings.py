@@ -9,19 +9,20 @@ class Settings:
     done_loading = False
 
     def __init__(self, file):
+        """Init all values to null then load from a .json file"""
         self.file = file
-        self.version = None
-        self.dark_mode = None
-        self.grid_size = None
-        self.node_size = None
-        self.default_alg = None
-        self.path_speed = None
-        self.screen_size = None
-        self.search_speed = None
-        self.maze_density = None
-        self.weight_density = None
-        self.enable_diagonals = None
-        self.visualize_when_dragging = None
+        self.version: str = ""
+        self.default_alg: str = ""
+        self.dark_mode: bool = False
+        self.screen_size: dict[str: int] = {"": 0}
+        self.grid_size: dict[str: int] = {"": 0}
+        self.node_size: int = 0
+        self.path_speed: float = 0.0
+        self.search_speed: float = 0.0
+        self.weight_density: int = 0
+        self.maze_density_percentage: float = 0.0
+        self.enable_diagonals: bool = False
+        self.visualize_when_dragging: bool = False
 
         self.load_from_json()
 
