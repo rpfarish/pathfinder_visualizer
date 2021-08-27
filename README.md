@@ -43,7 +43,7 @@ is not guaranteed to work.
 - **Place Bomb:** <kbd>B</kbd> + <kbd>Left Click</kbd>  **(at most 1 Bomb)**
 - **Generate Random Maze:** <kbd>M</kbd>
 - **Generate Random Weight Maze:** <kbd>Shift</kbd> + <kbd>M</kbd> **(only for weighted algs)**
-- **Reload Settings:** <kbd>L</kbd>
+- **Reload Settings:** <kbd>L</kbd> **(from settings.json)**
 - **Quit:** <kbd>Esc</kbd>
 
 ### Switch the current algorithm:
@@ -69,7 +69,7 @@ The random maze generator features the ability to recursively generate a maze wh
 
 | Option | Description |
 | --- | --- |
-| `default_alg`| Default algorithm loaded. This is the same as the last used algorithm. Default value is `"dijkstra"`.|
+| `default_alg`| Default algorithm loaded. This is the same as the last used algorithm. Default value is `dijkstra`.|
 | `dark_mode`  | Enable/disable dark mode. This functionality darkens the grid to dark gray. Default value is `true` (enabled).|
 | `screen_size`| Default window width and height. For full-screen, change to your monitor's dimensions. |
 | `grid_size`  | Width and Height values determine the size of the grid. Default values are `"WIDTH": 50, "HEIGHT": 25`. |
@@ -77,7 +77,7 @@ The random maze generator features the ability to recursively generate a maze wh
 | `path_speed` | The number of milliseconds between each path node being drawn. Default value is `0.07`.|
 | `search_speed`| The number of milliseconds between each node being visualized during the search area being drawn. Default value is `0.0055`. |
 | `weight_density` | The number of equivalent nodes required to pass through a weight node. Default value is `10`.|
-| `maze_density_percentage` | The percentage of walls put down for a maze. Higher percentages will result a denser maze.|
+| `maze_density_percentage` | The probability that a given node will have a wall placed on it when a maze is generated. If the percentage is too high, it will result in a recursion error. Default value is `0.33`|
 | `enable_diagonals` | When `true` pathfinder visualizer will use diagonals to find an optimal path. Default value is `false` (not enabled). |
 | `visualize_when_dragging` | When `true` pathfinder visualizer will redraw the search area and the path when dragging any node. Default value is `true` (enabled). |
 
@@ -95,6 +95,20 @@ For some more fun, try editing the following settings:
     "HEIGHT": 45
   },
   "node_size": 12
+}
+```
+
+If the visualization is too slow, decrease the `search_speed` setting.
+
+```json
+{
+  "grid_size": {
+    "WIDTH": 169,
+    "HEIGHT": 85
+  },
+  "node_size": 6,
+  "path_speed": 0.05,
+  "search_speed": 0
 }
 ```
 
