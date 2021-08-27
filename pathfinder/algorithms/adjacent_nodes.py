@@ -3,6 +3,14 @@ import numpy as np
 from numpy.linalg import matrix_power
 
 from pathfinder import settings
+from pathfinder.utils import cache
+
+
+@cache
+def h(p1, p2):
+    """Manhattan distance"""
+    (x1, y1), (x2, y2) = p1, p2
+    return abs(x1 - x2) + abs(y1 - y2)
 
 
 def adjacent_nodes(node: tuple, wall, grid_size):
