@@ -1,39 +1,18 @@
 """Visualizes the Grid class"""
 import time
-from math import log
 
 import pygame
 
 from pathfinder import settings
 from pathfinder.constants import GREEN, ORANGE, PINK, RED, WEIGHTED, YELLOW
 from pathfinder.node import Grid
-
-used_keys = [pygame.K_p, pygame.K_SPACE]
-
-
-def increment_keyslock(keys):
-    for i in used_keys:
-        if keys[i]:
-            Visualize.keyslock[i] = 1
-        else:
-            Visualize.keyslock[i] = 0
-
-
-def keylock(index, keys):
-    if keys[index] and Visualize.keyslock[index] == 0:
-        Visualize.keyslock[index] = 1
-        return True
-    else:
-        return False
+from pathfinder.utils import key_lock
 
 
 class Visualize:
-    """
-    visualizer class
-    grid is an object of Grid
-    """
+    """Visualizes the path and search area"""
 
-    keyslock = [0 for _ in range(512)]
+    keys_lock = [0] * 512
 
     cache = []
     objs = []
@@ -79,7 +58,7 @@ class Visualize:
         return iter(self.grid.keys())
 
     def __len__(self):
-        return len(self._get_path())
+        return sum(1 for _ in self._get_path())
 
     def __repr__(self):
         return f"""{self.__class__.__name__}({self.grid}, {self.start}, {self.end},
@@ -87,39 +66,35 @@ class Visualize:
                     {self._speed}, {self.level}, {self.parent}, {self.searched_nodes})"""
 
     @staticmethod
-    def pygame_quit():
+    def pygame_quit(paused=False):
         """
         Allows the user to exit, to pause,
-        keeps the window from freezing and
-        silences the pygame display not init error.
+        keeps the window from freezing.
         """
-        try:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit()
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_BACKSPACE]:
+            return True
+        elif keys[pygame.K_ESCAPE]:
+            quit()
+        elif key_lock(keys, pygame.K_p, Visualize.keys_lock):
+            paused = True
+        while paused:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
+                    quit()
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_BACKSPACE]:
-                return True
+            if key_lock(keys, pygame.K_p, Visualize.keys_lock):
+                break
+            elif keys[pygame.K_BACKSPACE]:
+                return None
             elif keys[pygame.K_ESCAPE]:
-                raise SystemExit
-            elif keylock(pygame.K_p, keys):
-                while True:
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            pygame.quit()
-                    keys = pygame.key.get_pressed()
-                    if keylock(pygame.K_p, keys) or keylock(pygame.K_SPACE, keys):
-                        break
-                    elif keys[pygame.K_BACKSPACE]:
-                        return None
-                    elif keys[pygame.K_ESCAPE]:
-                        raise SystemExit
-                    increment_keyslock(keys)
-            increment_keyslock(keys)
+                quit()
 
-            return False
-        except pygame.error:
-            pass
+        return False
 
     @property
     def search_speed(self):
@@ -131,7 +106,7 @@ class Visualize:
         self.cache.append(self[node].rect_obj)
 
     def _update(self, node, clear=False):
-        """renders and then updates the display"""
+        """Renders and then updates the display"""
         self._render(node)
         pygame.display.update(self.cache)
         if clear:
@@ -173,12 +148,12 @@ class Visualize:
         self._render(node)
 
     def draw_both(self):
-        """visualizes the search area and draws the path"""
+        """Visualizes the search area and draws the path"""
         area = {}
         for node in self.searched_nodes:
             if self[node].color == self.end_color:
                 break
-            if self[node].color != YELLOW:
+            if not self[node].is_path():
                 area[node] = self.area_color
 
         both = area | self._get_path_dict()
@@ -189,7 +164,7 @@ class Visualize:
                 self._render(node)
 
     def draw_path(self):
-        """visualizes the path"""
+        """Visualizes the path"""
         if self.end in self.parent:
 
             for node in reversed(self._get_path()):
@@ -200,14 +175,14 @@ class Visualize:
                     self[node].color = YELLOW
                     self._draw_path_node(node)
 
-                elif self[node].color == ORANGE:
+                elif self[node].is_weight():
                     self._draw_path_node(node)
 
             pygame.display.update()
 
     def draw_search_area(self):
-        """draws the search area"""
-        for i, node in enumerate(self.searched_nodes, 1):
+        """Draws the search area"""
+        for node in self.searched_nodes:
             # allow user to exit
             if self.pygame_quit():
                 return None
@@ -222,7 +197,7 @@ class Visualize:
                 self[node].color = YELLOW
 
                 self._update(node, clear=True)
-                time.sleep(self.search_speed * log(i, 8))
+                time.sleep(self.search_speed)
                 self[node].color = self.area_color
                 self._render(node)
 
