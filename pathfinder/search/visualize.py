@@ -58,7 +58,7 @@ class Visualize:
         return iter(self.grid.keys())
 
     def __len__(self):
-        return sum(1 for _ in self._get_path())
+        return len(self._get_path())
 
     def __repr__(self):
         return f"""{self.__class__.__name__}({self.grid}, {self.start}, {self.end},
