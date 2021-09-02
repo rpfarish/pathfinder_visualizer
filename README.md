@@ -65,9 +65,9 @@ in real time
 
 The random maze generator features the ability to recursively generate a maze which always has a solution.
 
-## Options
+## Settings
 
-| Option | Description |
+| Setting | Description |
 | --- | --- |
 | `default_alg`| Default algorithm loaded. This is the same as the last used algorithm. Default value is `dijkstra`.|
 | `dark_mode`  | Enable/disable dark mode. This functionality darkens the grid to dark gray. Default value is `true` (enabled).|
@@ -77,7 +77,7 @@ The random maze generator features the ability to recursively generate a maze wh
 | `path_speed` | The number of milliseconds between each path node being drawn. Default value is `0.07`.|
 | `search_speed`| The number of milliseconds between each node being visualized during the search area being drawn. Default value is `0.02`. |
 | `weight_density` | The number of equivalent nodes required to pass through a weight node. Default value is `10`.|
-| `maze_density_percentage` | The probability that a given node will have a wall placed on it when a maze is generated. If the percentage is too high, it will result in a recursion error. Default value is `0.33`|
+| `maze_density_percentage` | The probability that a given node will have a wall placed on it when a maze is generated. If the percentage is too high, it will result in a recursion error. Default value is `0.33`.|
 | `enable_diagonals` | When `true` pathfinder visualizer will use diagonals to find an optimal path. Default value is `false` (not enabled). |
 | `visualize_when_dragging` | When `true` pathfinder visualizer will redraw the search area and the path when dragging any node. Default value is `true` (enabled). |
 
