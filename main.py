@@ -1,6 +1,8 @@
 """Pathfinder Visualizer Project"""
+from typing import Sequence
 
 import pygame
+from pygame.surface import Surface
 
 import pathfinder as pf
 from pathfinder.maze import Maze
@@ -13,7 +15,7 @@ WIN = pygame.display.set_mode((pf.WIDTH, pf.HEIGHT))
 pygame.display.set_caption(f"Pathfinder v{pf.version}")
 
 
-def redraw_window(win):
+def redraw_window(win: Surface):
     """Updates the entire screen"""
     WIN.fill(pf.LIGHT_BLUE)
     graph.draw_grid(win)
@@ -22,11 +24,11 @@ def redraw_window(win):
 
 def update_nodes():
     """Updates objects that have changed states"""
-    pygame.display.update(Grid.cache)
+    pygame.display.update()
     Grid.cache.clear()
 
 
-def run_search(win, graph_: Grid, auto=False):
+def run_search(win: Surface, graph_: Grid, auto=False):
     """
     Calls the Algorithm class to visualize
     the pathfinder algorithm using the Visualize class
@@ -45,11 +47,13 @@ def run_search(win, graph_: Grid, auto=False):
     print('Visualization done')
 
 
-def set_alg(_keys, alg_map_: dict):
+def set_alg(_keys: Sequence[bool], alg_map_: dict[int:str]):
     """Sets the alg using keys and alg_map instead of multiple else ifs"""
     shift_ = (_keys[pygame.K_LSHIFT] or _keys[pygame.K_RSHIFT])
+    if not shift_:
+        return
     for key, new_alg in alg_map_.items():
-        if shift_ and _keys[key]:
+        if _keys[key]:
             pf.settings.default_alg = new_alg
             graph.reset_visualization(WIN)
             graph.visualized = False
