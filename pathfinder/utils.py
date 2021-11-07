@@ -5,6 +5,7 @@ import time
 from numpy import average
 
 from .constants import GRID_X, GRID_Y, OFFSET
+from .node import Grid
 
 
 def logger(fn):
@@ -65,12 +66,12 @@ def cache(fn):
     return func
 
 
-def constrain(val, min_val, max_val) -> int:
+def constrain(val: int, min_val: int, max_val: int) -> int:
     """Keeps val in the range of min_val and max_val"""
     return min(max_val, max(min_val, val))
 
 
-def remap(x, in_min, in_max, out_min, out_max) -> int:
+def remap(x: int, in_min: int, in_max: int, out_min: int, out_max: int) -> int:
     """
     Given an input range and output range, maps the value x to the output range.
     eg x=3, in_min=0, in_max=10, out_min=0, out_max=100 returns 30.
@@ -79,7 +80,7 @@ def remap(x, in_min, in_max, out_min, out_max) -> int:
     return constrain((x - in_min) * (out_max - out_min) // (in_max - in_min) + out_min, 0, out_max - 1)
 
 
-def get_node_pos(node, mouse) -> tuple[int, int]:
+def get_node_pos(node: Grid, mouse: tuple[int, int]) -> tuple[int, int]:
     """API to remap the value of mouse to an index tuple to access the correct grid member"""
     xgr, ygr = (GRID_X - 1, 0), (0, GRID_Y - 1)
     cur_node_x = remap(mouse[0], OFFSET, node.grid[xgr].x + node.grid[xgr].width, 0, GRID_X)
