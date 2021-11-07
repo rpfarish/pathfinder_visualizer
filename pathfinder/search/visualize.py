@@ -108,7 +108,7 @@ class Visualize:
     def _update(self, node, clear=False):
         """Renders and then updates the display"""
         self._render(node)
-        pygame.display.update(self.cache)
+        pygame.display.update()
         if clear:
             self.cache.clear()
 
