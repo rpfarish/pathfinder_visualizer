@@ -3,7 +3,7 @@
 Welcome to the Pathfinding Visualizer! I have always been fascinated by optimization problems and pathfinding algorithms
 are all about finding the optimal solution as quickly and efficiently as possible. Pathfinder uses various search
 algorithms to find the target node in an undirected graph which may have obstacles (edge cuts). Made with Python 3.9 and
-Pygame 2.0.0.
+Pygame 2.1.0.
 
 ## Meet the Algorithms
 
@@ -28,8 +28,7 @@ Pathfinder supports the following algorithms:
 You can install all required packages with pip by using the Terminal or Command Prompt. Download the code or use Git to
 clone the repo, and then navigate into the project directory using the Terminal. Type the
 command `pip install -r requirements.txt` (`pip3` on Unix). This should install the required packages to run the
-program. Run `main.py` to run the program. Note: This current version only supports `pygame 2.0.0` and any other version
-is not guaranteed to work.
+program. Run `main.py` to run the program.
 
 ## Keyboard and Mouse Commands
 
