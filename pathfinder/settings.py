@@ -1,5 +1,6 @@
 """Loads and Saves Settings"""
 import json
+from typing import TextIO
 
 from .default_settings import default_settings_backup
 
@@ -8,9 +9,9 @@ class Settings:
     """Loads settings from a .json file"""
     done_loading = False
 
-    def __init__(self, file):
+    def __init__(self, file: str):
         """Init all values to null then load from a .json file"""
-        self.file = file
+        self.file: str = file
         self.version: str = ""
         self.default_alg: str = ""
         self.dark_mode: bool = False
@@ -56,13 +57,13 @@ class SaveFile:
     loads and saves default settings
     """
 
-    def __init__(self, file, mode="r"):
-        self.file = file
-        self.mode = mode
+    def __init__(self, file: str, mode="r"):
+        self.file: str = file
+        self.mode: str = mode
         self.file_obj = None
 
     def __enter__(self):
-        self.file_obj = open(self.file, self.mode)
+        self.file_obj: TextIO = open(self.file, self.mode)
         return self.file_obj
 
     def __exit__(self, exc_type, exc_val, exc_tb):
