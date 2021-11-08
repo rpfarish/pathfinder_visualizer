@@ -74,7 +74,7 @@ The random maze generator features the ability to recursively generate a maze wh
 | `grid_size`  | Width and Height values determine the size of the grid. Default values are `"WIDTH": 50, "HEIGHT": 25`. |
 | `node_size`  | The width and height of a given node. Default value is `25`.| 
 | `path_speed` | The number of milliseconds between each path node being drawn. Default value is `0.07`.|
-| `search_speed`| The number of milliseconds between each node being visualized during the search area being drawn. Default value is `0.02`. |
+| `search_speed`| The number of milliseconds between each node being visualized during the search area being drawn. Default value is `0.002`. |
 | `weight_density` | The number of equivalent nodes required to pass through a weight node. Default value is `10`.|
 | `maze_density_percentage` | The probability that a given node will have a wall placed on it when a maze is generated. If the percentage is too high, it will result in a recursion error. Default value is `0.33`.|
 | `enable_diagonals` | When `true` pathfinder visualizer will use diagonals to find an optimal path. Default value is `false` (not enabled). |
