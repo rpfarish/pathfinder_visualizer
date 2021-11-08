@@ -1,6 +1,5 @@
 """returns a list of all adjacent nodes"""
 import numpy as np
-from numpy.linalg import matrix_power
 
 from pathfinder import settings
 from pathfinder.utils import cache
@@ -52,7 +51,8 @@ def adjacent_diagonals(node, wall, grid_size):
 
     direction = np.array([1, 1])  # diagonal up-right
     for angle in range(4):
-        x, y = potential_node = tuple(np.add(node, np.matmul(direction, matrix_power(rotation, angle))))
+        rotated_vector = np.matmul(direction, np.linalg.matrix_power(rotation, angle))
+        x, y = potential_node = tuple(np.add(node, rotated_vector))
         if potential_node not in wall and 0 <= x <= grid_size[0] and 0 <= y <= grid_size[1]:
             adjacent[potential_node] = np.sqrt(2)
 
